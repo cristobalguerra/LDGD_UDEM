@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <style>
@@ -1447,6 +1447,7 @@ document.getElementById('btnDownloadMap').addEventListener('click', generateMapP
 document.getElementById('btnDownloadPlan').addEventListener('click', generatePlanPDF);
 
 function generateMapPDF() {
+  if (!window.jspdf) { alert('La librería PDF aún no carga. Espera unos segundos e intenta de nuevo.'); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('l', 'mm', 'a3');
   const pw = doc.internal.pageSize.getWidth();
@@ -1487,6 +1488,7 @@ function generateMapPDF() {
 
 async function generatePlanPDF() {
   if (!currentCourseId) return;
+  if (!window.jspdf) { alert('La librería PDF aún no carga. Espera unos segundos e intenta de nuevo.'); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'letter');
   const pw = doc.internal.pageSize.getWidth();
