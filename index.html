@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LDG+D · Plan 2027 · Mapa Curricular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0b;
+  --surface: #141416;
+  --surface-2: #1c1c1f;
+  --surface-3: #242428;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --text: #f0efe9;
+  --text-secondary: rgba(240,239,233,0.55);
+  --text-tertiary: rgba(240,239,233,0.3);
+
+  /* Refined palette */
+  --lenguaje: #e8a0bf;
+  --lenguaje-bg: rgba(232,160,191,0.08);
+  --sistemas: #7ecba1;
+  --sistemas-bg: rgba(126,203,161,0.08);
+  --experiencia: #7ec8e3;
+  --experiencia-bg: rgba(126,200,227,0.08);
+  --direccion: #e8b87e;
+  --direccion-bg: rgba(232,184,126,0.08);
+  --produccion: #e87e7e;
+  --produccion-bg: rgba(232,126,126,0.08);
+
+  /* Accent */
+  --accent: #c8ff00;
+  --accent-dim: rgba(200,255,0,0.15);
+
+  /* Phase colors */
+  --phase-1: #6366f1;
+  --phase-2: #7ecba1;
+  --phase-3: #7ec8e3;
+  --phase-4: #e8b87e;
+  --phase-5: #c8ff00;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:14px; -webkit-font-smoothing:antialiased; }
+body {
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position:sticky; top:0; z-index:100;
+  background:rgba(10,10,11,0.85);
+  backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid var(--border);
+}
+.header-top {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 40px 0;
+}
+.logo-area { display:flex; align-items:baseline; gap:16px; }
+.logo {
+  font-size:0.7rem; font-weight:700; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--text-secondary);
+}
+.logo span { color:var(--accent); }
+.program-name {
+  font-size:1.6rem; font-weight:800; letter-spacing:-0.03em;
+  background:linear-gradient(135deg, var(--text) 0%, rgba(240,239,233,0.7) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.credits-badge {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem; font-weight:600;
+  color:var(--accent); background:var(--accent-dim);
+  padding:4px 10px; border-radius:100px;
+  letter-spacing:0.05em;
+}
+
+/* Tabs */
+.nav-tabs {
+  display:flex; gap:2px; padding:16px 40px 0;
+}
+.nav-tab {
+  padding:10px 24px; border:none; background:transparent;
+  color:var(--text-secondary); font:inherit; font-size:0.8rem;
+  font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+  cursor:pointer; border-radius:8px 8px 0 0;
+  transition:all 0.2s;
+}
+.nav-tab:hover { color:var(--text); background:var(--surface); }
+.nav-tab.active {
+  color:var(--text); background:var(--surface);
+  border-bottom:2px solid var(--accent);
+}
+
+/* Filters */
+.filters-bar {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 40px;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.filter-label {
+  font-size:0.65rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-tertiary); margin-right:4px;
+}
+.filter-group { display:flex; gap:4px; flex-wrap:wrap; }
+.filter-pill {
+  padding:5px 14px; border-radius:100px;
+  font:inherit; font-size:0.72rem; font-weight:500;
+  border:1px solid var(--border); background:transparent;
+  color:var(--text-secondary); cursor:pointer;
+  transition:all 0.2s;
+}
+.filter-pill:hover { border-color:var(--border-hover); color:var(--text); }
+.filter-pill.active { background:var(--surface-2); border-color:var(--border-hover); color:var(--text); }
+.filter-pill.eje-lenguaje.active { border-color:var(--lenguaje); color:var(--lenguaje); background:var(--lenguaje-bg); }
+.filter-pill.eje-sistemas.active { border-color:var(--sistemas); color:var(--sistemas); background:var(--sistemas-bg); }
+.filter-pill.eje-experiencia.active { border-color:var(--experiencia); color:var(--experiencia); background:var(--experiencia-bg); }
+.filter-pill.eje-direccion.active { border-color:var(--direccion); color:var(--direccion); background:var(--direccion-bg); }
+.filter-pill.eje-produccion.active { border-color:var(--produccion); color:var(--produccion); background:var(--produccion-bg); }
+.filter-separator {
+  width:1px; height:20px; background:var(--border); margin:0 8px;
+}
+
+/* ===== MAPA VIEW ===== */
+.view { display:none; padding:32px 40px 60px; }
+.view.active { display:block; }
+
+/* Phase headers */
+.phases-row {
+  display:grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap:8px; margin-bottom:8px;
+}
+.phase-group {
+  text-align:center; padding:12px 8px;
+  border-radius:12px;
+}
+.phase-label {
+  font-size:0.6rem; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-tertiary); margin-bottom:4px;
+}
+.phase-name {
+  font-size:0.7rem; font-weight:600;
+  color:var(--text-secondary); line-height:1.3;
+}
+
+/* Semester grid */
+.semesters-grid {
+  display:grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap:8px; align-items:start;
+}
+.semester-col { display:flex; flex-direction:column; gap:6px; }
+
+/* Semester header */
+.sem-header {
+  padding:16px 12px;
+  border-radius:12px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.sem-header::before {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:2px;
+}
+.sem-header.phase-1::before { background:var(--phase-1); }
+.sem-header.phase-2::before { background:var(--phase-2); }
+.sem-header.phase-3::before { background:var(--phase-3); }
+.sem-header.phase-4::before { background:var(--phase-4); }
+.sem-header.phase-5::before { background:var(--phase-5); }
+
+.sem-header .sem-num {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--text-secondary);
+}
+.sem-header .sem-cr {
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.4rem; font-weight:800;
+  color:var(--text); margin-top:2px;
+  letter-spacing:-0.02em;
+}
+.sem-header .sem-cr-label {
+  font-size:0.6rem; font-weight:500;
+  color:var(--text-tertiary); letter-spacing:0.08em;
+}
+
+/* Course cards */
+.course-card {
+  padding:14px 12px;
+  border-radius:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  cursor:default;
+  transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
+  position:relative;
+  overflow:hidden;
+}
+.course-card::before {
+  content:''; position:absolute; top:0; left:0;
+  width:3px; height:100%; border-radius:0 2px 2px 0;
+}
+.course-card:hover {
+  border-color:var(--border-hover);
+  transform:translateY(-1px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* Eje accent bars */
+.course-card.eje-lenguaje::before { background:var(--lenguaje); }
+.course-card.eje-sistemas::before { background:var(--sistemas); }
+.course-card.eje-experiencia::before { background:var(--experiencia); }
+.course-card.eje-direccion::before { background:var(--direccion); }
+.course-card.eje-produccion::before { background:var(--produccion); }
+.course-card.eje-multi::before {
+  background:linear-gradient(180deg, var(--lenguaje), var(--sistemas), var(--experiencia), var(--direccion), var(--produccion));
+}
+.course-card.eje-neutral::before { background:var(--text-tertiary); }
+
+/* Card type badge */
+.card-type {
+  display:inline-block; font-size:0.58rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px;
+  margin-bottom:6px;
+}
+.card-type.estudio { background:rgba(200,255,0,0.12); color:var(--accent); }
+.card-type.disciplinar { background:rgba(255,255,255,0.06); color:var(--text-secondary); }
+.card-type.sinergia { background:rgba(126,200,227,0.1); color:var(--experiencia); }
+.card-type.certificado { background:rgba(232,184,126,0.1); color:var(--direccion); }
+.card-type.practicas { background:rgba(232,126,126,0.1); color:var(--produccion); }
+.card-type.proyecto { background:rgba(200,255,0,0.12); color:var(--accent); }
+.card-type.general { background:rgba(255,255,255,0.04); color:var(--text-tertiary); }
+.card-type.formacion { background:rgba(255,255,255,0.04); color:var(--text-tertiary); }
+
+.card-name {
+  font-size:0.78rem; font-weight:600;
+  line-height:1.35; color:var(--text);
+  margin-bottom:8px;
+}
+.card-footer {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-credits {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem; font-weight:600;
+  color:var(--text-tertiary);
+}
+.card-dots {
+  display:flex; gap:3px;
+}
+.card-dot {
+  width:6px; height:6px; border-radius:50%;
+}
+.card-dot.lenguaje { background:var(--lenguaje); }
+.card-dot.sistemas { background:var(--sistemas); }
+.card-dot.experiencia { background:var(--experiencia); }
+.card-dot.direccion { background:var(--direccion); }
+.card-dot.produccion { background:var(--produccion); }
+
+/* Estudio card - special treatment */
+.course-card.is-estudio {
+  background:var(--surface-2);
+  border-color:rgba(255,255,255,0.08);
+}
+.course-card.is-estudio .card-name {
+  font-size:0.82rem; font-weight:700;
+}
+
+/* ===== CERTIFICADOS VIEW ===== */
+.certs-intro {
+  max-width:640px; margin-bottom:40px;
+}
+.certs-intro h2 {
+  font-size:0.65rem; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:12px;
+}
+.certs-intro p {
+  font-size:1rem; color:var(--text-secondary);
+  line-height:1.6;
+}
+.certs-intro strong { color:var(--text); }
+
+.certs-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.cert-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px 28px;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.cert-card:hover {
+  border-color:var(--border-hover);
+  transform:translateY(-2px);
+  box-shadow:0 12px 48px rgba(0,0,0,0.4);
+}
+.cert-card::before {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:3px;
+}
+.cert-card.cert-a::before { background:linear-gradient(90deg, var(--lenguaje), var(--produccion)); }
+.cert-card.cert-b::before { background:linear-gradient(90deg, var(--experiencia), var(--sistemas)); }
+.cert-card.cert-c::before { background:linear-gradient(90deg, var(--direccion), var(--produccion)); }
+
+.cert-badge {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.6rem; font-weight:700;
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:16px;
+}
+.cert-a .cert-badge { color:var(--lenguaje); }
+.cert-b .cert-badge { color:var(--experiencia); }
+.cert-c .cert-badge { color:var(--direccion); }
+
+.cert-title {
+  font-size:1.2rem; font-weight:800;
+  letter-spacing:-0.02em; line-height:1.25;
+  margin-bottom:8px;
+}
+.cert-subtitle {
+  font-size:0.8rem; font-style:italic;
+  color:var(--text-secondary); margin-bottom:24px;
+}
+
+.cert-section-label {
+  font-size:0.6rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-tertiary); margin-bottom:12px;
+}
+.cert-roles { list-style:none; margin-bottom:28px; }
+.cert-roles li {
+  font-size:0.85rem; color:var(--text-secondary);
+  padding:6px 0;
+  display:flex; align-items:center; gap:10px;
+}
+.cert-roles li::before {
+  content:''; display:block;
+  width:16px; height:1px;
+}
+.cert-a .cert-roles li::before { background:var(--lenguaje); }
+.cert-b .cert-roles li::before { background:var(--experiencia); }
+.cert-c .cert-roles li::before { background:var(--direccion); }
+
+.cert-materias { display:flex; flex-direction:column; gap:8px; }
+.cert-materia {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px; border-radius:8px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+}
+.cert-materia-code {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem; font-weight:700;
+  padding:3px 8px; border-radius:4px;
+  flex-shrink:0;
+}
+.cert-a .cert-materia-code { background:var(--lenguaje-bg); color:var(--lenguaje); }
+.cert-b .cert-materia-code { background:var(--experiencia-bg); color:var(--experiencia); }
+.cert-c .cert-materia-code { background:rgba(232,184,126,0.12); color:var(--direccion); }
+
+.cert-materia-name {
+  font-size:0.8rem; font-weight:500;
+  color:var(--text-secondary);
+}
+
+/* ===== LEGEND ===== */
+.legend {
+  display:flex; align-items:center; gap:20px;
+  padding:16px 40px;
+  border-top:1px solid var(--border);
+  margin-top:40px;
+}
+.legend-label {
+  font-size:0.6rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-tertiary);
+}
+.legend-item {
+  display:flex; align-items:center; gap:6px;
+  font-size:0.72rem; color:var(--text-secondary);
+}
+.legend-dot {
+  width:8px; height:8px; border-radius:50%;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:1400px) {
+  .semesters-grid, .phases-row {
+    grid-template-columns: repeat(9, minmax(120px, 1fr));
+    overflow-x:auto;
+  }
+  .view { overflow-x:auto; }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.course-card { animation:fadeIn 0.4s ease backwards; }
+.semester-col:nth-child(1) .course-card { animation-delay:0.02s; }
+.semester-col:nth-child(2) .course-card { animation-delay:0.04s; }
+.semester-col:nth-child(3) .course-card { animation-delay:0.06s; }
+.semester-col:nth-child(4) .course-card { animation-delay:0.08s; }
+.semester-col:nth-child(5) .course-card { animation-delay:0.1s; }
+.semester-col:nth-child(6) .course-card { animation-delay:0.12s; }
+.semester-col:nth-child(7) .course-card { animation-delay:0.14s; }
+.semester-col:nth-child(8) .course-card { animation-delay:0.16s; }
+.semester-col:nth-child(9) .course-card { animation-delay:0.18s; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--surface-3); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="logo"><span>UDEM</span> · CRGS</div>
+      <div class="program-name">Dirección y Gestión de Diseño</div>
+      <div class="credits-badge">Plan 2027 · 342 CR</div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-view="mapa">Mapa</button>
+      <button class="nav-tab" data-view="certificados">Certificados</button>
+    </div>
+  </div>
+  <div class="filters-bar" id="filtersBar">
+    <span class="filter-label">Ejes</span>
+    <div class="filter-group">
+      <button class="filter-pill eje-lenguaje active" data-filter="lenguaje">Lenguaje Visual</button>
+      <button class="filter-pill eje-sistemas active" data-filter="sistemas">Sistemas e Identidad</button>
+      <button class="filter-pill eje-experiencia active" data-filter="experiencia">Experiencia e Interacción</button>
+      <button class="filter-pill eje-direccion active" data-filter="direccion">Dirección Estratégica</button>
+      <button class="filter-pill eje-produccion active" data-filter="produccion">Producción y Gestión</button>
+    </div>
+    <div class="filter-separator"></div>
+    <span class="filter-label">Tipo</span>
+    <div class="filter-group">
+      <button class="filter-pill active" data-type="all">Todas</button>
+      <button class="filter-pill" data-type="estudio">Estudio</button>
+      <button class="filter-pill" data-type="disciplinar">Disciplinar</button>
+      <button class="filter-pill" data-type="sinergia">Sinergia</button>
+      <button class="filter-pill" data-type="certificado">Certificado</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAPA VIEW ===== -->
+<div class="view active" id="view-mapa">
+
+  <div class="phases-row">
+    <div class="phase-group" style="grid-column:1/3">
+      <div class="phase-label" style="color:var(--phase-1)">Sems. 1–2</div>
+      <div class="phase-name">Fundamentos</div>
+    </div>
+    <div class="phase-group" style="grid-column:3/6">
+      <div class="phase-label" style="color:var(--phase-2)">Sems. 3–5</div>
+      <div class="phase-name">Sistemas de Identidad y Comunicación</div>
+    </div>
+    <div class="phase-group" style="grid-column:6/7">
+      <div class="phase-label" style="color:var(--phase-3)">Sem. 6</div>
+      <div class="phase-name">Experiencia e Interacción</div>
+    </div>
+    <div class="phase-group" style="grid-column:7/9">
+      <div class="phase-label" style="color:var(--phase-4)">Sems. 7–8</div>
+      <div class="phase-name">Dirección Estratégica</div>
+    </div>
+    <div class="phase-group" style="grid-column:9/10">
+      <div class="phase-label" style="color:var(--phase-5)">Sem. 9</div>
+      <div class="phase-name">Proyecto Profesional</div>
+    </div>
+  </div>
+
+  <div class="semesters-grid" id="semGrid">
+    <!-- SEM 1 -->
+    <div class="semester-col">
+      <div class="sem-header phase-1">
+        <div class="sem-num">Sem 1</div>
+        <div class="sem-cr">36</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-lenguaje" data-axes="lenguaje" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Fundamentos del Diseño I</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-lenguaje" data-axes="lenguaje,sistemas" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Pensamiento Visual y Representación Sistémica</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span><span class="card-dot sistemas"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="lenguaje" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Historia, Cultura y Ética del Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SI — Herramientas Digitales para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 2 -->
+    <div class="semester-col">
+      <div class="sem-header phase-1">
+        <div class="sem-num">Sem 2</div>
+        <div class="sem-cr">42</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-lenguaje" data-axes="lenguaje" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Fundamentos del Diseño II</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-lenguaje" data-axes="lenguaje" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Tipografía I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Producción I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-lenguaje" data-axes="lenguaje" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Ilustración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="lenguaje" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Semiótica</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 3 -->
+    <div class="semester-col">
+      <div class="sem-header phase-2">
+        <div class="sem-num">Sem 3</div>
+        <div class="sem-cr">42</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-sistemas" data-axes="sistemas" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Sistemas de Identidad I</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot sistemas"></span></div></div></div>
+      <div class="course-card eje-sistemas" data-axes="sistemas,experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Diseño de Información I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot sistemas"></span><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Fotografía I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-lenguaje" data-axes="lenguaje" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Tipografía II</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion,experiencia,lenguaje" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SII — Dirección Creativa para Medios Audiovisuales e Interactivos</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span><span class="card-dot experiencia"></span><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 4 -->
+    <div class="semester-col">
+      <div class="sem-header phase-2">
+        <div class="sem-num">Sem 4</div>
+        <div class="sem-cr">48</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-sistemas" data-axes="sistemas,lenguaje" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Sistemas de Identidad II / Narrativa Visual Estratégica</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot sistemas"></span><span class="card-dot lenguaje"></span></div></div></div>
+      <div class="course-card eje-sistemas" data-axes="sistemas,experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Diseño de Información II: Sistemas de Información</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot sistemas"></span><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion,lenguaje,experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Fotografía II: Dirección de Arte</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span><span class="card-dot lenguaje"></span><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-sistemas" data-axes="sistemas" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Estrategia de Marca</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot sistemas"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Producción II: Gestión de Producción</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Certificado</div><div class="card-name">Materia de certificado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 5 -->
+    <div class="semester-col">
+      <div class="sem-header phase-2">
+        <div class="sem-num">Sem 5</div>
+        <div class="sem-cr">36</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-sistemas" data-axes="sistemas,lenguaje,experiencia" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Sistemas de Identidad III</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot sistemas"></span><span class="card-dot lenguaje"></span><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SIII — Diseño de Futuros</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 6 -->
+    <div class="semester-col">
+      <div class="sem-header phase-3">
+        <div class="sem-num">Sem 6</div>
+        <div class="sem-cr">42</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-experiencia" data-axes="experiencia" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Interacción</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-experiencia" data-axes="experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Experiencia</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-experiencia" data-axes="experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Prototipado Interactivo</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot experiencia"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SIV — Producción Artística Interdisciplinaria</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Certificado</div><div class="card-name">Materia de certificado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 7 -->
+    <div class="semester-col">
+      <div class="sem-header phase-4">
+        <div class="sem-num">Sem 7</div>
+        <div class="sem-cr">42</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-experiencia" data-axes="experiencia,direccion,produccion" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Diseño de Servicios</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot experiencia"></span><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion,produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Liderazgo y Gestión de Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SV — Investigación para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-produccion" data-axes="produccion" data-type="practicas"><div class="card-type practicas">Prácticas</div><div class="card-name">Prácticas Profesionales</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Certificado</div><div class="card-name">Materia de certificado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 8 -->
+    <div class="semester-col">
+      <div class="sem-header phase-4">
+        <div class="sem-num">Sem 8</div>
+        <div class="sem-cr">42</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-multi" data-axes="lenguaje,sistemas,experiencia,direccion,produccion" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Estudio Integral de Diseño</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span><span class="card-dot sistemas"></span><span class="card-dot experiencia"></span><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="proyecto"><div class="card-type proyecto">Proyecto Terminal</div><div class="card-name">Proyecto de Evaluación Final I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SVI — Estrategia de Negocios para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Certificado</div><div class="card-name">Materia de certificado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Certificado</div><div class="card-name">Materia de certificado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+
+    <!-- SEM 9 -->
+    <div class="semester-col">
+      <div class="sem-header phase-5">
+        <div class="sem-num">Sem 9</div>
+        <div class="sem-cr">12</div>
+        <div class="sem-cr-label">créditos</div>
+      </div>
+      <div class="course-card is-estudio eje-multi" data-axes="lenguaje,sistemas,experiencia,direccion,produccion" data-type="proyecto"><div class="card-type proyecto">Proyecto Terminal</div><div class="card-name">Proyecto de Evaluación Final II</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span><span class="card-dot sistemas"></span><span class="card-dot experiencia"></span><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
+      <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span class="legend-label">Ejes</span>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--lenguaje)"></span>Lenguaje Visual</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--sistemas)"></span>Sistemas e Identidad</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--experiencia)"></span>Experiencia e Interacción</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--direccion)"></span>Dirección Estratégica</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--produccion)"></span>Producción y Gestión</div>
+  </div>
+</div>
+
+<!-- ===== CERTIFICADOS VIEW ===== -->
+<div class="view" id="view-certificados">
+  <div class="certs-intro">
+    <h2>Perfiles de Egreso y Certificados Profesionales</h2>
+    <p>Elige <strong>2 certificados</strong>. Sus 6 materias ocuparán los slots interdisciplinarios (Sems. 4–8), definiendo tu perfil profesional de egreso.</p>
+  </div>
+
+  <div class="certs-grid">
+    <!-- CERT A -->
+    <div class="cert-card cert-a">
+      <div class="cert-badge">Certificado A</div>
+      <div class="cert-title">Dirección de Marca y Dirección de Arte</div>
+      <div class="cert-subtitle">"Dominio visual avanzado + implementación profesional"</div>
+      <div class="cert-section-label">Roles de egreso</div>
+      <ul class="cert-roles">
+        <li>Director de arte</li>
+        <li>Brand designer</li>
+        <li>Creative lead</li>
+        <li>Especialista en identidad visual</li>
+      </ul>
+      <div class="cert-section-label">Materias</div>
+      <div class="cert-materias">
+        <div class="cert-materia"><span class="cert-materia-code">A1</span><span class="cert-materia-name">Motion y Sistemas de Contenido</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">A2</span><span class="cert-materia-name">Producción Visual Avanzada</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">A3</span><span class="cert-materia-name">Gestión Estratégica de Marca y Portafolio</span></div>
+      </div>
+    </div>
+
+    <!-- CERT B -->
+    <div class="cert-card cert-b">
+      <div class="cert-badge">Certificado B</div>
+      <div class="cert-title">Producto Digital y Sistemas Interactivos</div>
+      <div class="cert-subtitle">"Perfil UX/Product"</div>
+      <div class="cert-section-label">Roles de egreso</div>
+      <ul class="cert-roles">
+        <li>UX / UI designer</li>
+        <li>Product designer</li>
+        <li>Interaction designer</li>
+      </ul>
+      <div class="cert-section-label">Materias</div>
+      <div class="cert-materias">
+        <div class="cert-materia"><span class="cert-materia-code">B1</span><span class="cert-materia-name">Sistemas de Diseño Avanzados</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">B2</span><span class="cert-materia-name">Analítica y Métricas de Producto Digital</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">B3</span><span class="cert-materia-name">Accesibilidad y Experiencia Inclusiva</span></div>
+      </div>
+    </div>
+
+    <!-- CERT C -->
+    <div class="cert-card cert-c">
+      <div class="cert-badge">Certificado C</div>
+      <div class="cert-title">Gestión Estratégica de Servicios y Transformación Organizacional</div>
+      <div class="cert-subtitle">"Perfil estratégico con enfoque consultivo"</div>
+      <div class="cert-section-label">Roles de egreso</div>
+      <ul class="cert-roles">
+        <li>Service designer</li>
+        <li>Design strategist</li>
+        <li>Innovation consultant</li>
+      </ul>
+      <div class="cert-section-label">Materias</div>
+      <div class="cert-materias">
+        <div class="cert-materia"><span class="cert-materia-code">C1</span><span class="cert-materia-name">Diseño de Workshops Estratégicos</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">C2</span><span class="cert-materia-name">Modelos de Innovación y Desarrollo Organizacional</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">C3</span><span class="cert-materia-name">Gestión del Cambio y Cultura de Diseño</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    // Hide filters on certificados
+    document.getElementById('filtersBar').style.display =
+      tab.dataset.view === 'mapa' ? 'flex' : 'none';
+  });
+});
+
+// Eje filters
+const ejeFilters = document.querySelectorAll('.filter-pill[data-filter]');
+ejeFilters.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    applyFilters();
+  });
+});
+
+// Type filters
+const typeFilters = document.querySelectorAll('.filter-pill[data-type]');
+typeFilters.forEach(btn => {
+  btn.addEventListener('click', () => {
+    typeFilters.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
+
+function applyFilters() {
+  const activeEjes = [...document.querySelectorAll('.filter-pill[data-filter].active')]
+    .map(b => b.dataset.filter);
+  const activeType = document.querySelector('.filter-pill[data-type].active')?.dataset.type || 'all';
+
+  document.querySelectorAll('.course-card').forEach(card => {
+    const cardAxes = (card.dataset.axes || '').split(',').filter(Boolean);
+    const cardType = card.dataset.type;
+
+    const matchesEje = cardAxes.length === 0 || cardAxes.some(a => activeEjes.includes(a));
+    const matchesType = activeType === 'all' || cardType === activeType;
+
+    if (matchesEje && matchesType) {
+      card.style.opacity = '1';
+      card.style.transform = 'scale(1)';
+      card.style.pointerEvents = 'auto';
+    } else {
+      card.style.opacity = '0.12';
+      card.style.transform = 'scale(0.98)';
+      card.style.pointerEvents = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>
