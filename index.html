@@ -721,9 +721,103 @@ body {
 
 /* ===== SAVE BUTTON STATES ===== */
 .btn-action.saved { background:#4ade80; color:var(--bg); border-color:#4ade80; pointer-events:none; }
+
+/* ===== LOGIN OVERLAY ===== */
+.login-overlay {
+  position:fixed; inset:0; z-index:999;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+}
+.login-overlay.hidden { display:none; }
+.login-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px 40px;
+  max-width:400px; width:90%;
+  text-align:center;
+}
+.login-logo {
+  font-size:0.65rem; font-weight:700;
+  letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--text-secondary); margin-bottom:8px;
+}
+.login-logo span { color:var(--accent); }
+.login-title {
+  font-size:1.5rem; font-weight:800;
+  letter-spacing:-0.03em; margin-bottom:6px;
+  background:linear-gradient(135deg, var(--text) 0%, rgba(240,239,233,0.7) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.login-subtitle {
+  font-size:0.8rem; color:var(--text-tertiary);
+  margin-bottom:32px;
+}
+.login-btn {
+  width:100%; padding:14px; border-radius:12px;
+  font:inherit; font-size:0.85rem; font-weight:700;
+  letter-spacing:0.02em; cursor:pointer;
+  transition:all 0.2s; border:none; margin-bottom:12px;
+}
+.login-btn.primary {
+  background:var(--accent); color:var(--bg);
+}
+.login-btn.primary:hover { background:#d4ff33; }
+.login-btn.secondary {
+  background:var(--surface-2); color:var(--text-secondary);
+  border:1px solid var(--border);
+}
+.login-btn.secondary:hover { background:var(--surface-3); color:var(--text); }
+.login-divider {
+  display:flex; align-items:center; gap:12px;
+  margin:20px 0; color:var(--text-tertiary); font-size:0.7rem;
+}
+.login-divider::before, .login-divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+.login-pw-group {
+  display:flex; gap:8px; margin-bottom:8px;
+}
+.login-pw-input {
+  flex:1; padding:12px 14px; border-radius:10px;
+  background:var(--surface-2); border:1px solid var(--border);
+  font:inherit; font-size:0.85rem; color:var(--text);
+  outline:none; transition:border-color 0.2s;
+}
+.login-pw-input:focus { border-color:var(--accent); }
+.login-pw-input::placeholder { color:var(--text-tertiary); }
+.login-pw-btn {
+  padding:12px 20px; border-radius:10px;
+  background:var(--surface-3); border:1px solid var(--border);
+  font:inherit; font-size:0.78rem; font-weight:700;
+  color:var(--text-secondary); cursor:pointer;
+  transition:all 0.2s; white-space:nowrap;
+}
+.login-pw-btn:hover { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.login-error {
+  font-size:0.72rem; color:var(--produccion);
+  margin-top:6px; min-height:1.2em;
+}
 </style>
 </head>
 <body>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo"><span>UDEM</span> · CRGS</div>
+    <div class="login-title">LDG+D · Plan 2027</div>
+    <div class="login-subtitle">Mapa Curricular</div>
+    <button class="login-btn primary" id="btnViewProgram">Ver Programa</button>
+    <div class="login-divider">Administrador</div>
+    <div class="login-pw-group">
+      <input class="login-pw-input" type="password" id="loginPassword" placeholder="Contraseña">
+      <button class="login-pw-btn" id="btnAdminLogin">Entrar</button>
+    </div>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
 
 <div class="header">
   <div class="header-top">
@@ -1054,6 +1148,46 @@ body {
 </div>
 
 <script>
+// ===== USER ROLE =====
+let userRole = null; // 'admin' | 'viewer'
+
+// ===== LOGIN =====
+document.getElementById('btnViewProgram').addEventListener('click', () => enterApp('viewer'));
+document.getElementById('btnAdminLogin').addEventListener('click', () => {
+  const pw = document.getElementById('loginPassword').value;
+  if (pw === 'ldgd2027') { enterApp('admin'); }
+  else { document.getElementById('loginError').textContent = 'Contraseña incorrecta'; }
+});
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnAdminLogin').click();
+});
+
+function enterApp(role) {
+  userRole = role;
+  document.getElementById('loginOverlay').classList.add('hidden');
+  applyRole();
+  initApp();
+}
+
+function applyRole() {
+  if (userRole === 'viewer') {
+    // Disable drag & drop
+    document.querySelectorAll('#semGrid .course-card').forEach(card => {
+      card.removeAttribute('draggable');
+      card.style.cursor = 'pointer';
+    });
+    // Hide save button, biblio add, file upload in modal
+    document.getElementById('btnSave').style.display = 'none';
+    document.getElementById('biblioAdd').style.display = 'none';
+    document.getElementById('fileZone').style.display = 'none';
+    // Make text fields not editable
+    document.querySelectorAll('.modal-field[contenteditable]').forEach(f => {
+      f.setAttribute('contenteditable', 'false');
+      f.style.cursor = 'default';
+    });
+  }
+}
+
 // ===== FIREBASE + STORAGE =====
 let db = null;
 try {
@@ -1383,6 +1517,7 @@ function recalcCredits() {
 let _layoutSaving = false; // prevent echo when we just saved
 
 async function saveLayout() {
+  if (userRole === 'viewer') return;
   const layout = {};
   document.querySelectorAll('.semester-col').forEach((col, i) => {
     layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.id);
@@ -1439,6 +1574,7 @@ async function loadCerts() {
   }
 }
 async function saveCertsDB() {
+  if (userRole === 'viewer') return; // viewers don't persist cert changes
   _certsSaving = true;
   await dbSet('certs', selectedCerts);
   setTimeout(() => { _certsSaving = false; }, 500);
@@ -1551,11 +1687,18 @@ async function generatePlanPDF() {
 }
 
 // ===== INIT =====
-(async function init() {
+async function initApp() {
   await loadLayout();
   await loadCerts();
   recalcCredits();
-})();
+  // Re-apply role restrictions after layout loaded (cards may have been re-added)
+  if (userRole === 'viewer') {
+    document.querySelectorAll('#semGrid .course-card').forEach(card => {
+      card.removeAttribute('draggable');
+      card.style.cursor = 'pointer';
+    });
+  }
+}
 </script>
 </body>
 </html>
