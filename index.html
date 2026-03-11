@@ -662,6 +662,10 @@ body {
 }
 .comp-label { font-size:0.78rem; color:var(--text-secondary); line-height:1.3; }
 .comp-item.checked .comp-label { color:var(--text); }
+.comp-item.suggested { border-left:2px solid var(--accent); }
+.comp-suggested-badge { color:var(--accent); font-size:0.7rem; margin-left:auto; flex-shrink:0; }
+.comp-suggestion-note { font-size:0.75rem; color:var(--text-tertiary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.comp-suggestion-note span { color:var(--accent); }
 
 /* ===== BIBLIOGRAFÍA + ARCHIVOS ===== */
 .biblio-list { display:flex; flex-direction:column; gap:6px; }
@@ -1114,6 +1118,7 @@ body {
       <div class="modal-section"><div class="modal-section-label">Objetivos Específicos</div><div class="modal-field" id="field-objetivosEspecificos" contenteditable="true" data-placeholder="1. ...  2. ...  3. ..."></div></div>
       <div class="modal-section">
         <div class="modal-section-label">Competencias del Perfil de Egreso</div>
+        <div class="comp-suggestion-note" id="compSuggestionNote"><span>★</span> Sugerencia de competencias que contempla esta asignatura</div>
         <div class="comp-list" id="compList"></div>
       </div>
       <div class="modal-section"><div class="modal-section-label">Contenido Temático</div><div class="modal-field" id="field-contenido" contenteditable="true" data-placeholder="Unidad 1: ...  Unidad 2: ...  Unidad 3: ..."></div></div>
@@ -1251,6 +1256,52 @@ const COMPETENCIAS = [
   { id:'C12', label:'Emprendimiento y visión de negocios' }
 ];
 
+const SUGGESTED_COMPS = {
+  // SEM 1
+  'fundamentos-del-diseño-i':['C1','C7','C9'],
+  'pensamiento-visual-y-representación-sistémica':['C1','C6','C7'],
+  'historia-cultura-y-ética-del-diseño':['C6','C10'],
+  'si-herramientas-digitales-para-el-diseño':['C5','C11'],
+  'formación-udem':['C10'],
+  // SEM 2
+  'fundamentos-del-diseño-ii':['C1','C7','C9'],
+  'tipografía-i':['C1'],
+  'producción-i':['C5','C11'],
+  'ilustración':['C1','C7'],
+  'semiótica':['C1','C6','C9'],
+  // SEM 3
+  'sistemas-de-identidad-i':['C1','C2','C7'],
+  'diseño-de-información-i':['C2','C3','C6'],
+  'fotografía-i':['C1','C5'],
+  'tipografía-ii':['C1','C2'],
+  'sii-dirección-creativa-para-medios-audiovisuales-e-interactivos':['C1','C5','C7','C11'],
+  // SEM 4
+  'sistemas-de-identidad-ii-narrativa-visual-estratégica':['C1','C2','C4','C9'],
+  'diseño-de-información-ii-sistemas-de-información':['C2','C3','C6','C11'],
+  'fotografía-ii-dirección-de-arte':['C1','C4','C5'],
+  'estrategia-de-marca':['C2','C4','C12'],
+  'producción-ii-gestión-de-producción':['C5','C11'],
+  // SEM 5
+  'sistemas-de-identidad-iii':['C1','C2','C3','C7'],
+  'siii-diseño-de-futuros':['C4','C6','C7'],
+  // SEM 6
+  'interacción':['C3','C7','C11'],
+  'experiencia':['C3','C6'],
+  'prototipado-interactivo':['C3','C7','C11'],
+  'siv-producción-artística-interdisciplinaria':['C5','C7','C8'],
+  // SEM 7
+  'diseño-de-servicios':['C3','C4','C8','C12'],
+  'liderazgo-y-gestión-de-diseño':['C4','C5','C8','C12'],
+  'sv-investigación-para-el-diseño':['C4','C6'],
+  'prácticas-profesionales':['C5','C8','C10'],
+  // SEM 8
+  'estudio-integral-de-diseño':['C1','C2','C3','C4','C7'],
+  'proyecto-de-evaluación-final-i':['C4','C6','C9'],
+  'svi-estrategia-de-negocios-para-el-diseño':['C4','C12'],
+  // SEM 9
+  'proyecto-de-evaluación-final-ii':['C4','C6','C7','C9'],
+};
+
 // ===== TAB SWITCHING =====
 document.querySelectorAll('.nav-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -1301,12 +1352,14 @@ let currentFiles = [];
 
 const textFields = ['objetivo','objetivosEspecificos','contenido','metodologia','evaluacion'];
 
-function renderCompetencias(checked) {
+function renderCompetencias(checked, suggested) {
+  suggested = suggested || [];
   compList.innerHTML = '';
   COMPETENCIAS.forEach(c => {
+    const isSuggested = suggested.includes(c.id);
     const item = document.createElement('div');
-    item.className = 'comp-item' + (checked.includes(c.id) ? ' checked' : '');
-    item.innerHTML = `<div class="comp-check-box">&#10003;</div><span class="comp-id">${c.id}</span><span class="comp-label">${c.label}</span>`;
+    item.className = 'comp-item' + (checked.includes(c.id) ? ' checked' : '') + (isSuggested ? ' suggested' : '');
+    item.innerHTML = `<div class="comp-check-box">&#10003;</div><span class="comp-id">${c.id}</span><span class="comp-label">${c.label}</span>` + (isSuggested ? '<span class="comp-suggested-badge">★</span>' : '');
     item.addEventListener('click', () => item.classList.toggle('checked'));
     compList.appendChild(item);
   });
@@ -1385,7 +1438,9 @@ async function openModal(card) {
     const el = document.getElementById('field-' + k);
     if (el) el.textContent = plan[k] || '';
   });
-  renderCompetencias(plan.competencias || []);
+  const suggested = SUGGESTED_COMPS[currentCourseId] || [];
+  renderCompetencias(plan.competencias || suggested, suggested);
+  document.getElementById('compSuggestionNote').style.display = suggested.length ? '' : 'none';
   renderBiblio(plan.bibliografia || []);
   renderFiles(plan.archivos || []);
 
