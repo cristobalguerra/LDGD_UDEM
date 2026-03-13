@@ -530,7 +530,8 @@ body {
 .comp-dash-legend-dot.l-I { background:#a855f7; }
 .comp-dash-legend-dot.l-D { background:#f59e0b; }
 .comp-dash-legend-dot.l-M { background:var(--accent); color:var(--bg); }
-.comp-matrix-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+.comp-dash-layout { display:flex; gap:20px; align-items:flex-start; }
+.comp-matrix-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); flex-shrink:0; }
 .comp-matrix { border-collapse:collapse; font-size:0.85rem; }
 .comp-matrix th, .comp-matrix td { padding:8px 6px; text-align:center; border:1px solid var(--border); }
 .comp-matrix th { background:var(--surface-2); font-weight:700; color:var(--text-secondary); position:sticky; top:0; z-index:1; }
@@ -542,7 +543,7 @@ body {
 .comp-cell-D { background:rgba(245,158,11,0.2); color:#fbbf24; }
 .comp-cell-M { background:rgba(200,255,0,0.15); color:var(--accent); }
 .comp-cell-empty { color:var(--border); }
-.comp-dash-summary { margin-top:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; }
+.comp-dash-summary { display:flex; flex-direction:column; gap:8px; min-width:220px; max-width:280px; }
 .comp-summary-card { padding:12px; border-radius:10px; background:var(--surface); border:1px solid var(--border); }
 .comp-summary-id { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:700; color:var(--accent); }
 .comp-summary-label { font-size:0.75rem; color:var(--text-secondary); margin:2px 0 8px; }
@@ -1158,8 +1159,10 @@ body {
       <div class="comp-dash-legend-item"><div class="comp-dash-legend-dot l-D">D</div> Desarrolla</div>
       <div class="comp-dash-legend-item"><div class="comp-dash-legend-dot l-M">M</div> Domina</div>
     </div>
-    <div class="comp-matrix-wrap" id="compMatrixWrap"></div>
-    <div class="comp-dash-summary" id="compDashSummary"></div>
+    <div class="comp-dash-layout">
+      <div class="comp-matrix-wrap" id="compMatrixWrap"></div>
+      <div class="comp-dash-summary" id="compDashSummary"></div>
+    </div>
   </div>
 </div>
 
