@@ -634,6 +634,21 @@ body {
 .btn-action.primary { background:var(--accent); color:var(--bg); border-color:var(--accent); }
 .btn-action.primary:hover { background:#d4ff33; }
 .btn-action svg { width:14px; height:14px; }
+.btn-action.danger { border-color:rgba(239,68,68,0.3); color:#ef4444; }
+.btn-action.danger:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+
+/* ===== MODAL TYPE SELECT ===== */
+.modal-type-row { display:flex; align-items:center; gap:8px; }
+.modal-type-select {
+  display:none; font:inherit; font-size:0.62rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.06em;
+  padding:3px 8px; border-radius:6px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text-secondary);
+  cursor:pointer; outline:none;
+}
+.modal-type-select:focus { border-color:rgba(200,255,0,0.4); }
+body.role-admin .modal-type-select { display:block; }
+body.role-admin #modalBadge { display:none; }
 
 /* ===== CERT SELECTION ===== */
 .cert-card { cursor:pointer; user-select:none; }
@@ -1244,8 +1259,20 @@ body {
   <div class="modal-panel">
     <div class="modal-header">
       <div class="modal-header-info">
-        <div class="card-type" id="modalBadge"></div>
-        <h2 class="modal-course-name" id="modalCourseName"></h2>
+        <div class="modal-type-row">
+          <div class="card-type" id="modalBadge"></div>
+          <select class="modal-type-select" id="modalTypeSelect">
+            <option value="estudio">Estudio</option>
+            <option value="disciplinar">Disciplinar</option>
+            <option value="sinergia">Sinergia</option>
+            <option value="certificado">Certificado</option>
+            <option value="formacion">Formación UDEM</option>
+            <option value="general">Conocimiento General</option>
+            <option value="proyecto">Proyecto Terminal</option>
+            <option value="practicas">Prácticas</option>
+          </select>
+        </div>
+        <h2 class="modal-course-name" id="modalCourseName" contenteditable="false"></h2>
         <div class="modal-meta" id="modalMeta"></div>
       </div>
       <button class="modal-close" id="modalClose">&times;</button>
@@ -1290,6 +1317,10 @@ body {
         PDF
       </button>
       <button class="btn-action" id="btnCloseModal">Cerrar</button>
+      <button class="btn-action danger" id="btnToBanco" style="margin-left:auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Mover a banco
+      </button>
     </div>
   </div>
 </div>
@@ -1312,6 +1343,7 @@ document.getElementById('loginPassword').addEventListener('keydown', e => {
 function enterApp(role) {
   userRole = role;
   document.getElementById('loginOverlay').classList.add('hidden');
+  document.body.classList.toggle('role-admin', role === 'admin');
   applyRole();
   initApp();
 }
@@ -1323,10 +1355,11 @@ function applyRole() {
       card.removeAttribute('draggable');
       card.style.cursor = 'pointer';
     });
-    // Hide save button, biblio add, file upload in modal
+    // Hide save button, biblio add, file upload, banco in modal
     document.getElementById('btnSave').style.display = 'none';
     document.getElementById('biblioAdd').style.display = 'none';
     document.getElementById('fileZone').style.display = 'none';
+    document.getElementById('btnToBanco').style.display = 'none';
     // Make text fields not editable
     document.querySelectorAll('.modal-field[contenteditable]').forEach(f => {
       f.setAttribute('contenteditable', 'false');
@@ -1492,6 +1525,7 @@ const compList = document.getElementById('compList');
 const biblioList = document.getElementById('biblioList');
 const fileListEl = document.getElementById('fileList');
 let currentCourseId = null;
+let currentCard = null;
 let currentFiles = [];
 let _savedSnapshot = null;
 
@@ -1605,6 +1639,7 @@ function handleFiles(filesList) {
 document.getElementById('biblioAdd').addEventListener('click', () => addBiblioEntry(''));
 
 async function openModal(card) {
+  currentCard = card;
   const name = card.querySelector('.card-name').textContent;
   const type = card.querySelector('.card-type')?.textContent || '';
   const credits = card.querySelector('.card-credits')?.textContent || '';
@@ -1613,6 +1648,7 @@ async function openModal(card) {
   modalBadge.textContent = type;
   modalBadge.className = 'card-type ' + type.toLowerCase();
   modalMeta.textContent = credits + ' · Plan 2027';
+  openModalAdmin(card);
 
   const plans = (await dbGet('plans')) || {};
   const plan = plans[currentCourseId] || {};
@@ -1640,6 +1676,7 @@ function closeModal() {
   overlay.classList.remove('active');
   document.body.style.overflow = '';
   currentCourseId = null;
+  currentCard = null;
   currentFiles = [];
 }
 
@@ -2224,18 +2261,120 @@ async function buildCompDashboard() {
   });
 }
 
+// ===== EDITABLE COURSE NAME & TYPE (ADMIN) =====
+const modalTypeSelect = document.getElementById('modalTypeSelect');
+const TYPE_LABELS = {estudio:'Estudio',disciplinar:'Disciplinar',sinergia:'Sinergia',certificado:'Certificado',formacion:'Formación UDEM',general:'Conocimiento General',proyecto:'Proyecto Terminal',practicas:'Prácticas'};
+
+function openModalAdmin(card) {
+  if (userRole === 'admin') {
+    modalName.setAttribute('contenteditable', 'true');
+    modalName.style.cursor = 'text';
+    const t = card.dataset.type || 'disciplinar';
+    modalTypeSelect.value = t;
+  } else {
+    modalName.setAttribute('contenteditable', 'false');
+    modalName.style.cursor = 'default';
+  }
+}
+
+function applyNameTypeChange() {
+  if (!currentCard || userRole !== 'admin') return;
+  const newName = modalName.textContent.trim();
+  const newType = modalTypeSelect.value;
+  if (!newName) return;
+  // Update card
+  currentCard.querySelector('.card-name').textContent = newName;
+  const typeEl = currentCard.querySelector('.card-type');
+  typeEl.textContent = TYPE_LABELS[newType] || newType;
+  typeEl.className = 'card-type ' + newType;
+  currentCard.dataset.type = newType;
+  if (newType === 'estudio') { currentCard.classList.add('is-estudio'); }
+  else { currentCard.classList.remove('is-estudio'); }
+  // Update badge in modal
+  modalBadge.textContent = TYPE_LABELS[newType] || newType;
+  modalBadge.className = 'card-type ' + newType;
+  // Re-generate ID
+  const slug = newName.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  const oldId = currentCard.dataset.id;
+  currentCard.dataset.id = slug;
+  currentCourseId = slug;
+  // Persist customizations
+  saveCustomizations();
+  saveLayout();
+}
+
+modalTypeSelect.addEventListener('change', applyNameTypeChange);
+modalName.addEventListener('blur', applyNameTypeChange);
+
+async function saveCustomizations() {
+  const customs = {};
+  document.querySelectorAll('#semGrid .course-card').forEach(card => {
+    customs[card.dataset.id] = {
+      name: card.querySelector('.card-name').textContent.trim(),
+      type: card.dataset.type || 'disciplinar',
+      credits: card.querySelector('.card-credits')?.textContent || '6 cr'
+    };
+  });
+  await dbSet('customizations', customs);
+}
+
+async function loadCustomizations() {
+  const customs = await dbGet('customizations');
+  if (!customs) return;
+  document.querySelectorAll('#semGrid .course-card').forEach(card => {
+    const id = card.dataset.id;
+    const c = customs[id];
+    if (!c) return;
+    card.querySelector('.card-name').textContent = c.name;
+    const typeEl = card.querySelector('.card-type');
+    typeEl.textContent = TYPE_LABELS[c.type] || c.type;
+    typeEl.className = 'card-type ' + c.type;
+    card.dataset.type = c.type;
+    if (c.type === 'estudio') card.classList.add('is-estudio');
+    else card.classList.remove('is-estudio');
+  });
+}
+
+// ===== MODAL → BANCO BUTTON =====
+document.getElementById('btnToBanco').addEventListener('click', async () => {
+  if (!currentCard || userRole !== 'admin') return;
+  const name = currentCard.querySelector('.card-name').textContent.trim();
+  const note = prompt('¿Por qué se descarta "' + name + '"?\n(Opcional — deja vacío si no quieres agregar nota)');
+  if (note === null) return; // cancelled
+  const bank = (await dbGet('bank')) || [];
+  bank.push({
+    id: getCourseId(currentCard),
+    name: name,
+    type: currentCard.querySelector('.card-type')?.textContent || '',
+    credits: currentCard.querySelector('.card-credits')?.textContent || '',
+    axes: currentCard.dataset.axes || '',
+    html: currentCard.outerHTML,
+    note: note || '',
+    date: new Date().toISOString().slice(0, 10)
+  });
+  await dbSet('bank', bank);
+  currentCard.remove();
+  closeModal();
+  recalcCredits();
+  saveLayout();
+  renderBank();
+});
+
 // ===== INIT =====
 async function initApp() {
+  await loadCustomizations();
   await loadLayout();
   await loadCerts();
   recalcCredits();
   buildCompDashboard();
+  renderBank();
   // Re-apply role restrictions after layout loaded (cards may have been re-added)
   if (userRole === 'viewer') {
     document.querySelectorAll('#semGrid .course-card').forEach(card => {
       card.removeAttribute('draggable');
       card.style.cursor = 'pointer';
     });
+    document.getElementById('btnToBanco').style.display = 'none';
   }
 }
 </script>
