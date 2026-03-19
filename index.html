@@ -2372,9 +2372,20 @@ document.getElementById('btnToBanco').addEventListener('click', async () => {
   renderBank();
 });
 
+// ===== APPLY BANK (remove banked cards from DOM on load) =====
+async function applyBank() {
+  const bank = (await dbGet('bank')) || [];
+  if (!bank.length) return;
+  const bankedIds = new Set(bank.map(b => b.id));
+  document.querySelectorAll('#semGrid .course-card').forEach(card => {
+    if (bankedIds.has(card.dataset.id)) card.remove();
+  });
+}
+
 // ===== INIT =====
 async function initApp() {
   await loadCustomizations();
+  await applyBank();
   await loadLayout();
   await loadCerts();
   recalcCredits();
