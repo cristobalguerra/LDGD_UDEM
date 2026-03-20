@@ -1803,7 +1803,7 @@ function saveLayout() {
   _layoutTimer = setTimeout(async () => {
     const layout = {};
     document.querySelectorAll('.semester-col').forEach((col, i) => {
-      layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.id);
+      layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.origId || c.dataset.id);
     });
     _layoutSaving = true;
     await dbSet('layout', layout);
@@ -1814,7 +1814,11 @@ function saveLayout() {
 function applyLayout(layout) {
   if (!layout) return;
   const cardMap = {};
-  document.querySelectorAll('#semGrid .course-card').forEach(c => { cardMap[c.dataset.id] = c; });
+  document.querySelectorAll('#semGrid .course-card').forEach(c => {
+    cardMap[c.dataset.origId || c.dataset.id] = c;
+    // Also index by current id for backward compat with old layout data
+    if (c.dataset.id !== c.dataset.origId) cardMap[c.dataset.id] = c;
+  });
   document.querySelectorAll('.semester-col').forEach((col, i) => {
     const ids = layout['sem' + (i + 1)];
     if (!ids) return;
