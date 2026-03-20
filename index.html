@@ -523,6 +523,50 @@ body {
 ::-webkit-scrollbar-thumb { background:var(--surface-3); border-radius:3px; }
 ::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.15); }
 
+/* ===== PRERREQUISITOS EDITOR ===== */
+.prereq-selected-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; min-height:28px; }
+.prereq-tag {
+  display:flex; align-items:center; gap:4px;
+  background:var(--accent-dim); border:1px solid rgba(255,245,0,0.25);
+  border-radius:6px; padding:3px 8px 3px 10px;
+  font-size:0.72rem; color:var(--accent); font-weight:500;
+}
+.prereq-tag .prereq-remove {
+  cursor:pointer; opacity:0.6; font-size:0.8rem; margin-left:2px;
+  transition:opacity 0.15s;
+}
+.prereq-tag .prereq-remove:hover { opacity:1; }
+.prereq-picker {
+  position:relative;
+}
+.prereq-picker input {
+  width:100%; padding:8px 12px; border-radius:8px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--text); font:inherit; font-size:0.78rem; outline:none;
+  transition:border-color 0.2s;
+}
+.prereq-picker input:focus { border-color:rgba(255,245,0,0.4); }
+.prereq-picker input::placeholder { color:var(--text-tertiary); }
+.prereq-dropdown {
+  display:none; position:absolute; top:100%; left:0; right:0; z-index:20;
+  max-height:200px; overflow-y:auto;
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:8px; margin-top:4px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+.prereq-dropdown.open { display:block; }
+.prereq-option {
+  padding:7px 12px; font-size:0.75rem; color:var(--text-secondary);
+  cursor:pointer; transition:background 0.12s;
+  display:flex; align-items:center; gap:6px;
+}
+.prereq-option:hover { background:var(--surface-3); color:var(--text); }
+.prereq-option .prereq-opt-sem {
+  font-size:0.6rem; color:var(--text-tertiary); font-weight:600;
+  min-width:32px;
+}
+.prereq-empty { font-size:0.72rem; color:var(--text-tertiary); font-style:italic; }
+
 /* ===== SERIACIÓN HOVER HIGHLIGHT ===== */
 .course-card.prereq-chain {
   border-color:rgba(255,245,0,0.5) !important;
@@ -1329,6 +1373,14 @@ body.role-admin #modalBadge { display:none; }
       <div class="modal-section"><div class="modal-section-label">Metodología de Enseñanza</div><div class="modal-field" id="field-metodologia" contenteditable="true" data-placeholder="Estrategias didácticas, actividades de aprendizaje..."></div></div>
       <div class="modal-section"><div class="modal-section-label">Criterios de Evaluación</div><div class="modal-field" id="field-evaluacion" contenteditable="true" data-placeholder="Proyectos: 40%  Exámenes: 30%  Participación: 30%"></div></div>
       <div class="modal-section">
+        <div class="modal-section-label">Prerrequisitos (Seriación)</div>
+        <div class="prereq-selected-list" id="prereqSelectedList"></div>
+        <div class="prereq-picker" id="prereqPicker">
+          <input type="text" id="prereqSearch" placeholder="Buscar materia para agregar como prerrequisito..." autocomplete="off">
+          <div class="prereq-dropdown" id="prereqDropdown"></div>
+        </div>
+      </div>
+      <div class="modal-section">
         <div class="modal-section-label">Bibliografía</div>
         <div class="biblio-list" id="biblioList"></div>
         <button class="biblio-add" id="biblioAdd">+ Agregar referencia</button>
@@ -1453,31 +1505,140 @@ function getCourseId(card) {
   });
 })();
 
-// ===== PREREQUISITE / SERIACIÓN CHAINS =====
-const PREREQ_CHAINS = [
-  // Cadena principal de Estudios (cada estudio requiere el anterior)
-  ['Fundamentos del Diseño I', 'Fundamentos del Diseño II', 'Sistemas de Identidad I',
-   'Diseño de Información II: Sistemas de Información', 'Sistemas de Identidad III',
-   'Estudio de Interacción', 'Diseño de Servicios', 'Estudio Integral de Diseño'],
-  // Seriaciones disciplinares
-  ['Tipografía I', 'Tipografía II'],
-  ['Fotografía I', 'Fotografía II: Dirección de Arte'],
-  ['Producción I', 'Producción II: Gestión de Producción'],
-  ['Diseño de Información I', 'Diseño de Información II: Sistemas de Información'],
-  ['Proyecto de Evaluación Final I', 'Proyecto de Evaluación Final II'],
-];
+// ===== PREREQUISITE / SERIACIÓN SYSTEM =====
+// Default chains (used if no custom prereqs saved in Firebase)
+const DEFAULT_PREREQS = {
+  'Fundamentos del Diseño II': ['Fundamentos del Diseño I'],
+  'Sistemas de Identidad I': ['Fundamentos del Diseño II'],
+  'Diseño de Información II: Sistemas de Información': ['Sistemas de Identidad I'],
+  'Sistemas de Identidad III': ['Diseño de Información II: Sistemas de Información'],
+  'Estudio de Interacción': ['Sistemas de Identidad III'],
+  'Diseño de Servicios': ['Estudio de Interacción'],
+  'Estudio Integral de Diseño': ['Diseño de Servicios'],
+  'Tipografía II': ['Tipografía I'],
+  'Fotografía II: Dirección de Arte': ['Fotografía I'],
+  'Producción II: Gestión de Producción': ['Producción I'],
+  'Diseño de Información II: Sistemas de Información': ['Diseño de Información I', 'Sistemas de Identidad I'],
+  'Proyecto de Evaluación Final II': ['Proyecto de Evaluación Final I'],
+};
 
-// Build prereq lookup: name → { before:[], after:[] }
-const _prereqMap = new Map();
-PREREQ_CHAINS.forEach(chain => {
-  chain.forEach((name, i) => {
-    if (!_prereqMap.has(name)) _prereqMap.set(name, { before:[], after:[] });
-    const entry = _prereqMap.get(name);
-    if (i > 0) entry.before.push(chain[i - 1]);
-    if (i < chain.length - 1) entry.after.push(chain[i + 1]);
+// Live prereq data: courseName → [prereqName, ...]
+let _prereqData = {};
+
+// Rebuild the bidirectional map from _prereqData
+let _prereqMap = new Map();
+function rebuildPrereqMap() {
+  _prereqMap = new Map();
+  for (const [course, prereqs] of Object.entries(_prereqData)) {
+    if (!_prereqMap.has(course)) _prereqMap.set(course, { before:[], after:[] });
+    prereqs.forEach(p => {
+      _prereqMap.get(course).before.push(p);
+      if (!_prereqMap.has(p)) _prereqMap.set(p, { before:[], after:[] });
+      _prereqMap.get(p).after.push(course);
+    });
+  }
+}
+
+async function loadPrereqs() {
+  const saved = await dbGet('prereqs');
+  _prereqData = saved || { ...DEFAULT_PREREQS };
+  rebuildPrereqMap();
+}
+
+async function savePrereqs() {
+  await dbSet('prereqs', _prereqData);
+  rebuildPrereqMap();
+}
+
+// Get all course names with semester info for the picker
+function getAllCourseOptions() {
+  const options = [];
+  document.querySelectorAll('.semester-col').forEach((col, i) => {
+    col.querySelectorAll('.course-card .card-name').forEach(el => {
+      options.push({ name: el.textContent.trim(), sem: i + 1 });
+    });
   });
-});
+  return options;
+}
 
+// ===== PREREQ EDITOR IN MODAL =====
+function renderPrereqEditor(courseName) {
+  const list = document.getElementById('prereqSelectedList');
+  const searchInput = document.getElementById('prereqSearch');
+  const dropdown = document.getElementById('prereqDropdown');
+  const picker = document.getElementById('prereqPicker');
+
+  const prereqs = _prereqData[courseName] || [];
+
+  // Render selected tags
+  function renderTags() {
+    const current = _prereqData[courseName] || [];
+    if (!current.length) {
+      list.innerHTML = '<span class="prereq-empty">Sin prerrequisitos definidos</span>';
+    } else {
+      list.innerHTML = current.map((p, i) => `<div class="prereq-tag">${p}<span class="prereq-remove" data-idx="${i}">&times;</span></div>`).join('');
+    }
+    // Remove handler
+    list.querySelectorAll('.prereq-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        _prereqData[courseName].splice(idx, 1);
+        if (!_prereqData[courseName].length) delete _prereqData[courseName];
+        savePrereqs();
+        renderTags();
+        markUnsaved();
+      });
+    });
+  }
+  renderTags();
+
+  // Show/hide based on admin
+  if (userRole !== 'admin') {
+    picker.style.display = 'none';
+    list.querySelectorAll('.prereq-remove').forEach(b => b.style.display = 'none');
+    return;
+  }
+  picker.style.display = '';
+
+  // Search + dropdown
+  const allOptions = getAllCourseOptions().filter(o => o.name !== courseName);
+
+  function showDropdown(filter) {
+    const current = new Set(_prereqData[courseName] || []);
+    const filtered = allOptions.filter(o =>
+      !current.has(o.name) &&
+      o.name.toLowerCase().includes(filter.toLowerCase())
+    );
+    if (!filtered.length) {
+      dropdown.innerHTML = '<div class="prereq-option" style="pointer-events:none;color:var(--text-tertiary)">No hay resultados</div>';
+    } else {
+      dropdown.innerHTML = filtered.slice(0, 15).map(o =>
+        `<div class="prereq-option" data-name="${o.name}"><span class="prereq-opt-sem">S${o.sem}</span>${o.name}</div>`
+      ).join('');
+    }
+    dropdown.classList.add('open');
+
+    dropdown.querySelectorAll('.prereq-option[data-name]').forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (!_prereqData[courseName]) _prereqData[courseName] = [];
+        _prereqData[courseName].push(opt.dataset.name);
+        savePrereqs();
+        renderTags();
+        searchInput.value = '';
+        dropdown.classList.remove('open');
+        markUnsaved();
+      });
+    });
+  }
+
+  searchInput.value = '';
+  searchInput.oninput = () => showDropdown(searchInput.value);
+  searchInput.onfocus = () => showDropdown(searchInput.value);
+  // Close dropdown on outside click (handled via blur with delay)
+  searchInput.onblur = () => setTimeout(() => dropdown.classList.remove('open'), 200);
+}
+
+// ===== SERIACIÓN HOVER =====
 function initSeriacionHover() {
   const grid = document.getElementById('semGrid');
   grid.addEventListener('mouseenter', handleSeriacionHover, true);
@@ -1491,14 +1652,12 @@ function handleSeriacionHover(e) {
   if (!name || !_prereqMap.has(name)) return;
 
   const grid = document.getElementById('semGrid');
-  // Build name→card map
   const cardsByName = new Map();
   grid.querySelectorAll('.course-card').forEach(c => {
     const n = c.querySelector('.card-name')?.textContent.trim();
     if (n) cardsByName.set(n, c);
   });
 
-  // Collect all related cards in the chain
   const related = new Set();
   const labels = new Map();
   related.add(name);
@@ -1530,7 +1689,6 @@ function handleSeriacionHover(e) {
     if (entry) entry.after.forEach(a => { if (!visited.has(a)) queue.push(a); });
   }
 
-  // Apply classes
   grid.classList.add('seriacion-dimmed');
   related.forEach(n => {
     const c = cardsByName.get(n);
@@ -1798,6 +1956,7 @@ async function openModal(card) {
   document.getElementById('compSuggestionNote').style.display = Object.keys(suggested).length ? '' : 'none';
   renderBiblio(plan.bibliografia || []);
   renderFiles(plan.archivos || []);
+  renderPrereqEditor(name);
 
   // Reset save button
   const saveBtn = document.getElementById('btnSave');
@@ -2540,6 +2699,7 @@ async function initApp() {
   await applyBank();
   await loadLayout();
   await loadCerts();
+  await loadPrereqs();
   recalcCredits();
   buildCompDashboard();
   renderBank();
