@@ -2091,18 +2091,26 @@ function recalcCredits() {
 let _layoutSaving = false; // prevent echo when we just saved
 
 let _layoutTimer = null;
-function saveLayout() {
+async function _doSaveLayout() {
+  const layout = {};
+  document.querySelectorAll('.semester-col').forEach((col, i) => {
+    layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.origId || c.dataset.id);
+  });
+  _layoutSaving = true;
+  await dbSet('layout', layout);
+  saveLocal(LS_LAYOUT, layout);
+  setTimeout(() => { _layoutSaving = false; }, 1000);
+}
+
+// immediate=true for bank operations, false (debounced) for drag
+function saveLayout(immediate) {
   if (userRole === 'viewer') return;
   clearTimeout(_layoutTimer);
-  _layoutTimer = setTimeout(async () => {
-    const layout = {};
-    document.querySelectorAll('.semester-col').forEach((col, i) => {
-      layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.origId || c.dataset.id);
-    });
-    _layoutSaving = true;
-    await dbSet('layout', layout);
-    setTimeout(() => { _layoutSaving = false; }, 500);
-  }, 1500);
+  if (immediate) {
+    _doSaveLayout();
+  } else {
+    _layoutTimer = setTimeout(_doSaveLayout, 1500);
+  }
 }
 
 function applyLayout(layout) {
@@ -2125,7 +2133,6 @@ function applyLayout(layout) {
     });
   });
   recalcCredits();
-  drawPrereqLines();
 }
 
 async function loadLayout() {
@@ -2402,7 +2409,7 @@ document.getElementById('ctxSendBank').addEventListener('click', async () => {
 
   ctxTarget.remove();
   recalcCredits();
-  saveLayout();
+  saveLayout(true);
   ctxTarget = null;
 });
 
@@ -2485,9 +2492,8 @@ async function restoreFromBank(idx) {
   bank.splice(idx, 1);
   await dbSet('bank', bank);
   recalcCredits();
-  saveLayout();
+  saveLayout(true);
   renderBank();
-  drawPrereqLines();
 }
 
 async function deleteFromBank(idx) {
@@ -2675,9 +2681,8 @@ document.getElementById('btnToBanco').addEventListener('click', async () => {
   currentCard.remove();
   closeModal();
   recalcCredits();
-  saveLayout();
+  saveLayout(true);
   renderBank();
-  drawPrereqLines();
 });
 
 // ===== APPLY BANK (remove banked cards from DOM on load) =====
