@@ -355,8 +355,8 @@ body {
 .certs-intro strong { color:var(--text); }
 
 .certs-grid {
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:20px;
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:24px;
 }
 .cert-card {
   background:var(--surface);
@@ -439,6 +439,24 @@ body {
 .cert-materia-name {
   font-size:0.8rem; font-weight:500;
   color:var(--text-secondary);
+}
+/* Concentración A vs B visual distinction in malla */
+.course-card.conc-a {
+  background:rgba(90,173,163,0.12);
+  border-color:rgba(90,173,163,0.3);
+}
+.course-card.conc-a .card-type { background:rgba(90,173,163,0.2); color:var(--sistemas); }
+.course-card.conc-b {
+  background:rgba(148,150,204,0.12);
+  border-color:rgba(148,150,204,0.3);
+}
+.course-card.conc-b .card-type { background:rgba(148,150,204,0.2); color:var(--experiencia); }
+
+.cert-note {
+  margin-top:16px; padding-top:12px;
+  border-top:1px solid var(--border);
+  font-size:0.68rem; color:var(--text-tertiary);
+  font-style:italic;
 }
 
 /* ===== LEGEND ===== */
@@ -1296,7 +1314,7 @@ body.role-admin #modalBadge { display:none; }
       <div class="course-card eje-produccion" data-axes="produccion,lenguaje,experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Fotografía II: Dirección de Arte</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span><span class="card-dot lenguaje"></span><span class="card-dot experiencia"></span></div></div></div>
       <div class="course-card eje-sistemas" data-axes="sistemas" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Estrategia de Marca</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot sistemas"></span></div></div></div>
       <div class="course-card eje-produccion" data-axes="produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Producción II: Gestión de Producción</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span><span class="card-dot direccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-a" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración A</div><div class="card-name">Dir. de Arte y Fotografía de Producto</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
     </div>
 
@@ -1309,7 +1327,7 @@ body.role-admin #modalBadge { display:none; }
       </div>
       <div class="course-card is-estudio eje-sistemas" data-axes="sistemas,lenguaje,experiencia" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Sistemas de Identidad III</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot sistemas"></span><span class="card-dot lenguaje"></span><span class="card-dot experiencia"></span></div></div></div>
       <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SIII — Diseño de Futuros</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-a" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración A</div><div class="card-name">Sistemas de Diseño Avanzado</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="formacion"><div class="card-type formacion">Formación UDEM</div><div class="card-name">Formación UDEM</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
     </div>
@@ -1335,7 +1353,7 @@ body.role-admin #modalBadge { display:none; }
       <div class="course-card eje-experiencia" data-axes="experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Diseño de Experiencia</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot experiencia"></span></div></div></div>
       <div class="course-card eje-experiencia" data-axes="experiencia" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Prototipado Interactivo</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot experiencia"></span></div></div></div>
       <div class="course-card eje-produccion" data-axes="produccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SIV — Producción Artística Interdisciplinaria</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-a" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración A</div><div class="card-name">IA Aplicada al Diseño Visual</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
     </div>
 
@@ -1360,7 +1378,7 @@ body.role-admin #modalBadge { display:none; }
       <div class="course-card eje-direccion" data-axes="direccion,produccion" data-type="disciplinar"><div class="card-type disciplinar">Disciplinar</div><div class="card-name">Liderazgo y Gestión de Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
       <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SV — Investigación para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-produccion" data-axes="produccion" data-type="practicas"><div class="card-type practicas">Prácticas</div><div class="card-name">Prácticas Profesionales</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot produccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-b" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración B</div><div class="card-name">Diseño Estratégico e Innovación</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
     </div>
 
@@ -1374,8 +1392,8 @@ body.role-admin #modalBadge { display:none; }
       <div class="course-card is-estudio eje-multi" data-axes="lenguaje,sistemas,experiencia,direccion,produccion" data-type="estudio"><div class="card-type estudio">Estudio</div><div class="card-name">Estudio Integral de Diseño</div><div class="card-footer"><span class="card-credits">12 cr</span><div class="card-dots"><span class="card-dot lenguaje"></span><span class="card-dot sistemas"></span><span class="card-dot experiencia"></span><span class="card-dot direccion"></span><span class="card-dot produccion"></span></div></div></div>
       <div class="course-card eje-direccion" data-axes="direccion" data-type="proyecto"><div class="card-type proyecto">Proyecto Terminal</div><div class="card-name">Proyecto de Evaluación Final I</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-direccion" data-axes="direccion" data-type="sinergia"><div class="card-type sinergia">Sinergia</div><div class="card-name">SVI — Estrategia de Negocios para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
-      <div class="course-card eje-direccion" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración</div><div class="card-name">Materia de concentración</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-b" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración B</div><div class="card-name">Gestión e Implementación de Proyectos de Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
+      <div class="course-card eje-direccion conc-b" data-axes="direccion" data-type="certificado"><div class="card-type certificado">Concentración B</div><div class="card-name">Emprendimiento y Modelos de Negocio para el Diseño</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"><span class="card-dot direccion"></span></div></div></div>
       <div class="course-card eje-neutral" data-axes="" data-type="general"><div class="card-type general">Conocimiento General</div><div class="card-name">Conocimiento General</div><div class="card-footer"><span class="card-credits">6 cr</span><div class="card-dots"></div></div></div>
     </div>
 
@@ -1420,70 +1438,53 @@ body.role-admin #modalBadge { display:none; }
 <!-- ===== CONCENTRACIONES VIEW ===== -->
 <div class="view" id="view-certificados">
   <div class="certs-intro">
-    <h2>Perfiles de Egreso y Concentraciones Profesionales</h2>
-    <p>Elige <strong>2 concentraciones</strong>. Sus 6 materias ocuparán los slots interdisciplinarios (Sems. 4–8), definiendo tu perfil profesional de egreso.</p>
+    <h2>Concentraciones Profesionales</h2>
+    <p>El alumno cursa <strong>ambas concentraciones</strong> (6 materias total, Sems. 4–8). Cada una desarrolla un perfil profesional complementario. Las materias de concentración no tienen prerrequisitos entre sí.</p>
   </div>
 
   <div class="certs-grid">
     <!-- CERT A -->
-    <div class="cert-card cert-a" data-cert="a">
+    <div class="cert-card cert-a selected" data-cert="a">
       <div class="cert-check">&#10003;</div>
       <div class="cert-badge">Concentración A</div>
-      <div class="cert-title">Dirección de Marca y Dirección de Arte</div>
-      <div class="cert-subtitle">"Dominio visual avanzado + implementación profesional"</div>
+      <div class="cert-title">Dirección de Marca y Diseño Visual</div>
+      <div class="cert-subtitle">Enfoque creativo y producción visual avanzada</div>
       <div class="cert-section-label">Roles de egreso</div>
       <ul class="cert-roles">
         <li>Director de arte</li>
         <li>Brand designer</li>
+        <li>Diseñador de sistemas visuales</li>
         <li>Creative lead</li>
-        <li>Especialista en identidad visual</li>
       </ul>
       <div class="cert-section-label">Materias</div>
       <div class="cert-materias">
-        <div class="cert-materia"><span class="cert-materia-code">A1</span><span class="cert-materia-name">Motion y Sistemas de Contenido</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">A2</span><span class="cert-materia-name">Producción Visual Avanzada</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">A3</span><span class="cert-materia-name">Gestión Estratégica de Marca y Portafolio</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">A1</span><span class="cert-materia-name">Dirección de Arte y Fotografía de Producto</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">A2</span><span class="cert-materia-name">Sistemas de Diseño Avanzado</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">A3</span><span class="cert-materia-name">IA Aplicada al Diseño Visual</span></div>
       </div>
+      <div class="cert-note">Sin prerrequisitos · Sems. 4, 5 y 6</div>
     </div>
 
     <!-- CERT B -->
-    <div class="cert-card cert-b" data-cert="b">
+    <div class="cert-card cert-b selected" data-cert="b">
       <div class="cert-check">&#10003;</div>
       <div class="cert-badge">Concentración B</div>
-      <div class="cert-title">Producto Digital y Sistemas Interactivos</div>
-      <div class="cert-subtitle">"Perfil UX/Product"</div>
+      <div class="cert-title">Diseño Estratégico y Gestión</div>
+      <div class="cert-subtitle">Enfoque estratégico, negocio e implementación</div>
       <div class="cert-section-label">Roles de egreso</div>
       <ul class="cert-roles">
-        <li>UX / UI designer</li>
-        <li>Product designer</li>
-        <li>Interaction designer</li>
+        <li>Estratega de diseño</li>
+        <li>Gestor de proyectos creativos</li>
+        <li>Consultor de innovación</li>
+        <li>Emprendedor de diseño</li>
       </ul>
       <div class="cert-section-label">Materias</div>
       <div class="cert-materias">
-        <div class="cert-materia"><span class="cert-materia-code">B1</span><span class="cert-materia-name">Sistemas de Diseño Avanzados</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">B2</span><span class="cert-materia-name">Analítica y Métricas de Producto Digital</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">B3</span><span class="cert-materia-name">Accesibilidad y Experiencia Inclusiva</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">B1</span><span class="cert-materia-name">Diseño Estratégico e Innovación</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">B2</span><span class="cert-materia-name">Gestión e Implementación de Proyectos de Diseño</span></div>
+        <div class="cert-materia"><span class="cert-materia-code">B3</span><span class="cert-materia-name">Emprendimiento y Modelos de Negocio para el Diseño</span></div>
       </div>
-    </div>
-
-    <!-- CERT C -->
-    <div class="cert-card cert-c" data-cert="c">
-      <div class="cert-check">&#10003;</div>
-      <div class="cert-badge">Concentración C</div>
-      <div class="cert-title">Gestión Estratégica de Servicios y Transformación Organizacional</div>
-      <div class="cert-subtitle">"Perfil estratégico con enfoque consultivo"</div>
-      <div class="cert-section-label">Roles de egreso</div>
-      <ul class="cert-roles">
-        <li>Service designer</li>
-        <li>Design strategist</li>
-        <li>Innovation consultant</li>
-      </ul>
-      <div class="cert-section-label">Materias</div>
-      <div class="cert-materias">
-        <div class="cert-materia"><span class="cert-materia-code">C1</span><span class="cert-materia-name">Diseño de Workshops Estratégicos</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">C2</span><span class="cert-materia-name">Modelos de Innovación y Desarrollo Organizacional</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">C3</span><span class="cert-materia-name">Gestión del Cambio y Cultura de Diseño</span></div>
-      </div>
+      <div class="cert-note">Sin prerrequisitos · Sems. 7 y 8</div>
     </div>
   </div>
 </div>
