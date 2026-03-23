@@ -203,7 +203,12 @@ body {
 .pw-4 .phase-semesters { grid-template-columns: repeat(2, 1fr); }
 .pw-5 .phase-semesters { grid-template-columns: 1fr; }
 
-.semester-col { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.semester-col {
+  display:grid;
+  grid-template-rows: auto repeat(var(--grid-rows, 12), minmax(72px, auto));
+  gap:4px; min-width:0;
+  align-content:start;
+}
 
 /* Semester header */
 .sem-header {
@@ -1560,33 +1565,62 @@ function getCourseId(card) {
   });
 })();
 
-// ===== SORT CARDS BY TYPE (retícula) =====
-const TYPE_ORDER = {
-  'estudio': 0,
-  'sinergia': 1,
-  'disciplinar': 2,
-  'proyecto': 3,
-  'practicas': 4,
-  'certificado': 5,
-  'formacion': 6,
-  'general': 7
-};
+// ===== RETÍCULA: FIXED TYPE LANES =====
+// Each type gets fixed grid rows so they align horizontally across semesters
+const TYPE_LANES = [
+  { type: 'estudio',     slots: 1 },
+  { type: 'sinergia',    slots: 1 },
+  { type: 'disciplinar', slots: 3 },
+  { type: 'proyecto',    slots: 1 },
+  { type: 'practicas',   slots: 1 },
+  { type: 'certificado', slots: 2 },
+  { type: 'formacion',   slots: 1 },
+  { type: 'general',     slots: 2 },
+];
 
-function sortCardsByType() {
+// Build row map: type -> [startRow, endRow]
+const TYPE_ROW_START = {};
+let _row = 2; // row 1 = sem-header
+TYPE_LANES.forEach(lane => {
+  TYPE_ROW_START[lane.type] = { start: _row, slots: lane.slots };
+  _row += lane.slots;
+});
+const TOTAL_GRID_ROWS = _row - 1;
+
+const TYPE_ORDER = {};
+TYPE_LANES.forEach((l, i) => { TYPE_ORDER[l.type] = i; });
+
+function applyReticula() {
+  // Set CSS var for grid rows
+  document.documentElement.style.setProperty('--grid-rows', TOTAL_GRID_ROWS);
+
   document.querySelectorAll('.semester-col').forEach(col => {
-    const header = col.querySelector('.sem-header');
+    // Sort cards by type first
     const cards = [...col.querySelectorAll('.course-card')];
-    cards.sort((a, b) => {
-      const ta = TYPE_ORDER[a.dataset.type] ?? 99;
-      const tb = TYPE_ORDER[b.dataset.type] ?? 99;
-      return ta - tb;
-    });
+    cards.sort((a, b) => (TYPE_ORDER[a.dataset.type] ?? 99) - (TYPE_ORDER[b.dataset.type] ?? 99));
     cards.forEach(c => col.appendChild(c));
+
+    // Track how many of each type we've placed
+    const typeCount = {};
+
+    // Assign grid rows - header is row 1
+    const header = col.querySelector('.sem-header');
+    if (header) header.style.gridRow = '1';
+
+    cards.forEach(card => {
+      const t = card.dataset.type;
+      const lane = TYPE_ROW_START[t];
+      if (!lane) { card.style.gridRow = ''; return; }
+      const nth = typeCount[t] || 0;
+      typeCount[t] = nth + 1;
+      const row = lane.start + Math.min(nth, lane.slots - 1);
+      card.style.gridRow = row;
+    });
   });
 }
 
-// Apply default sort on load (before any saved layout overrides)
-sortCardsByType();
+// Apply on load
+applyReticula();
 
 // ===== PREREQUISITE / SERIACIÓN SYSTEM =====
 // Default chains (used if no custom prereqs saved in Firebase)
@@ -2797,6 +2831,7 @@ async function initApp() {
   await loadLayout();
   await loadCerts();
   await loadPrereqs();
+  applyReticula();
   recalcCredits();
   buildCompDashboard();
   renderBank();
