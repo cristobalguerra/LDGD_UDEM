@@ -2414,7 +2414,7 @@ let _layoutTimer = null;
 async function _doSaveLayout() {
   const layout = {};
   document.querySelectorAll('.semester-col').forEach((col, i) => {
-    layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card')].map(c => c.dataset.origId || c.dataset.id);
+    layout['sem' + (i + 1)] = [...col.querySelectorAll('.course-card:not(.conc-slot-empty)')].map(c => c.dataset.origId || c.dataset.id).filter(Boolean);
   });
   _layoutSaving = true;
   await dbSet('layout', layout);
@@ -2917,7 +2917,9 @@ modalName.addEventListener('blur', applyNameTypeChange);
 async function saveCustomizations() {
   const customs = {};
   document.querySelectorAll('#semGrid .course-card').forEach(card => {
+    if (card.classList.contains('conc-slot-empty')) return; // skip empty slots
     const key = card.dataset.origId || card.dataset.id;
+    if (!key) return;
     const data = {
       name: card.querySelector('.card-name').textContent.trim(),
       type: card.dataset.type || 'disciplinar',
