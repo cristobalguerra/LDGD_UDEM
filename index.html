@@ -1912,24 +1912,8 @@ function alignLabels() {
 applyReticula();
 window.addEventListener('load', () => setTimeout(applyReticula, 100));
 
-// Add competency badges to cards
-function addCompBadges() {
-  document.querySelectorAll('#semGrid .course-card').forEach(card => {
-    // Remove old badges
-    card.querySelectorAll('.card-comp-badges').forEach(b => b.remove());
-    const name = card.querySelector('.card-name')?.textContent.trim() || '';
-    const slug = name.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-    const comps = SUGGESTED_COMPS[slug];
-    if (!comps || Object.keys(comps).length === 0) return;
-    const badges = document.createElement('div');
-    badges.className = 'card-comp-badges';
-    for (const [cid, lvl] of Object.entries(comps)) {
-      badges.innerHTML += `<span class="ccb ccb-${lvl}">${cid.replace('C','')}<sup>${lvl}</sup></span>`;
-    }
-    card.querySelector('.card-footer')?.before(badges);
-  });
-}
-// addCompBadges called after SUGGESTED_COMPS is defined (below)
+// Clean up any leftover competency badges from previous version
+document.querySelectorAll('.card-comp-badges').forEach(b => b.remove());
 
 // ===== SYNC CONCENTRATION NAMES FROM MALLA TO CONCENTRACIONES PAGE =====
 function syncConcNames() {
@@ -2457,7 +2441,7 @@ const SUGGESTED_COMPS = {
   'proyecto-de-evaluación-final-ii':{C1:'M',C4:'M',C6:'M',C7:'M',C8:'M',C9:'M'},
 };
 
-// Competency badges disabled — using eje dots instead
+// Competency info available in modal only (not on cards)
 
 // ===== TRAYECTO FORMATIVO =====
 // Concentration course slugs (optional — dashed border)
