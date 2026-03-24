@@ -142,9 +142,37 @@ body {
 .view.active { display:block; }
 
 /* Phase headers */
+/* Malla with type labels */
+.malla-with-labels {
+  display:flex; gap:0; align-items:stretch;
+}
+.type-labels-col {
+  display:flex; flex-direction:column; gap:4px;
+  width:28px; min-width:28px; padding-top:0; margin-right:6px;
+}
+.type-label-spacer { height:60px; } /* matches sem-header height */
+.type-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.42rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase;
+  writing-mode:vertical-lr; text-orientation:mixed;
+  transform:rotate(180deg);
+  display:flex; align-items:center; justify-content:center;
+  padding:6px 2px;
+  border-radius:4px;
+  color:var(--text-tertiary);
+  flex:1;
+}
+.tl-estudio { color:var(--accent); background:rgba(255,245,0,0.05); }
+.tl-disciplinar { color:var(--text-secondary); background:rgba(255,255,255,0.03); }
+.tl-sinergia { color:var(--experiencia); background:rgba(126,200,227,0.05); }
+.tl-certificado { color:var(--direccion); background:rgba(250,195,27,0.05); }
+.tl-formacion { color:var(--accent); background:rgba(255,245,0,0.04); }
+.tl-general { color:var(--text-tertiary); background:rgba(255,255,255,0.02); }
+
 /* Phase layout — wraps semester columns */
 .phase-layout {
-  display:flex; gap:6px; align-items:stretch;
+  display:flex; gap:6px; align-items:stretch; flex:1; min-width:0;
 }
 .phase-wrap {
   display:flex; flex-direction:column;
@@ -1239,6 +1267,16 @@ body.role-admin #modalBadge { display:none; }
 <!-- ===== MAPA VIEW ===== -->
 <div class="view active" id="view-mapa">
 
+  <div class="malla-with-labels">
+    <div class="type-labels-col">
+      <div class="type-label-spacer"></div>
+      <div class="type-label tl-estudio">Estudio</div>
+      <div class="type-label tl-disciplinar">Disciplinar</div>
+      <div class="type-label tl-sinergia">Sinergia</div>
+      <div class="type-label tl-certificado">Concentración</div>
+      <div class="type-label tl-formacion">Formación</div>
+      <div class="type-label tl-general">Conocimiento General</div>
+    </div>
   <div class="phase-layout" id="semGrid">
 
     <!-- PHASE 1: Fundamentos -->
@@ -1421,6 +1459,7 @@ body.role-admin #modalBadge { display:none; }
     </div><!-- /phase-wrap pw-5 -->
 
   </div><!-- /phase-layout -->
+  </div><!-- /malla-with-labels -->
 
   <!-- Leyenda institucional -->
   <div class="malla-footer">
@@ -1711,14 +1750,49 @@ const TYPE_ORDER = {
 };
 
 function applyReticula() {
+  // Sort cards by type in each semester
   document.querySelectorAll('.semester-col').forEach(col => {
     const cards = [...col.querySelectorAll('.course-card')];
     cards.sort((a, b) => (TYPE_ORDER[a.dataset.type] ?? 99) - (TYPE_ORDER[b.dataset.type] ?? 99));
     cards.forEach(c => col.appendChild(c));
   });
+
+  // Measure max height per type lane across all semesters
+  const laneHeights = {};
+  const typeToLane = { estudio:'estudio', disciplinar:'disciplinar', practicas:'disciplinar',
+    sinergia:'sinergia', certificado:'certificado', proyecto:'certificado',
+    formacion:'formacion', general:'general' };
+
+  document.querySelectorAll('.semester-col').forEach(col => {
+    const cards = [...col.querySelectorAll('.course-card')];
+    const laneH = {};
+    cards.forEach(card => {
+      const lane = typeToLane[card.dataset.type] || 'general';
+      laneH[lane] = (laneH[lane] || 0) + card.offsetHeight + 4; // +4 for gap
+    });
+    for (const [lane, h] of Object.entries(laneH)) {
+      laneHeights[lane] = Math.max(laneHeights[lane] || 0, h);
+    }
+  });
+
+  // Set label heights to match
+  const labelMap = {
+    estudio: '.tl-estudio', disciplinar: '.tl-disciplinar',
+    sinergia: '.tl-sinergia', certificado: '.tl-certificado',
+    formacion: '.tl-formacion', general: '.tl-general'
+  };
+  for (const [lane, sel] of Object.entries(labelMap)) {
+    const el = document.querySelector(sel);
+    if (el && laneHeights[lane]) {
+      el.style.height = laneHeights[lane] + 'px';
+      el.style.flex = 'none';
+    }
+  }
 }
 
 applyReticula();
+// Recalc after fonts/images load
+window.addEventListener('load', () => setTimeout(applyReticula, 100));
 
 // ===== PREREQUISITE / SERIACIÓN SYSTEM =====
 // Default chains (used if no custom prereqs saved in Firebase)
