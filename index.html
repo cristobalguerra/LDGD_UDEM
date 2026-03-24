@@ -2239,9 +2239,17 @@ function buildJourneyStrip() {
     sem.dataset.sem = i;
     sem.innerHTML = '<div class="journey-sem-num">S' + (i+1) + '</div><div class="journey-sem-phase">' + SEM_JOURNEY[i].phase + '</div>';
     sem.addEventListener('click', () => {
+      const hint = document.getElementById('journeyHint');
+      // Toggle: if clicking the same sem, close it
+      if (sem.classList.contains('active')) {
+        sem.classList.remove('active');
+        panel.className = 'journey-panel';
+        panel.innerHTML = '';
+        if (hint) hint.style.display = 'block';
+        return;
+      }
       document.querySelectorAll('.journey-sem').forEach(s => s.classList.remove('active'));
       sem.classList.add('active');
-      const hint = document.getElementById('journeyHint');
       if (hint) hint.style.display = 'none';
 
       const col = semCols[i];
