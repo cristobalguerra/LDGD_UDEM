@@ -1661,6 +1661,8 @@ function enterApp(role) {
   document.body.classList.toggle('role-admin', role === 'admin');
   applyRole();
   initApp();
+  // Align labels after login overlay is hidden and elements are visible
+  alignLabels();
 }
 
 function applyRole() {
@@ -1805,21 +1807,21 @@ function applyReticula() {
     const el = document.querySelector(sel);
     if (el) el.style.height = (slots * (CARD_H + 4) - 4) + 'px';
   });
-  // Calculate offset: phase-head + border + phase-semesters-padding + sem-header + gap
-  const labelsCol = document.querySelector('.type-labels-col');
-  const phaseHead = document.querySelector('.phase-head');
-  const phaseSems = document.querySelector('.phase-semesters');
-  const semHeader = document.querySelector('.sem-header');
-  if (labelsCol && phaseHead && phaseSems && semHeader) {
-    const phStyle = getComputedStyle(phaseHead);
-    const psStyle = getComputedStyle(phaseSems);
-    const phH = phaseHead.offsetHeight + parseFloat(phStyle.marginBottom || 0);
-    const psP = parseFloat(psStyle.paddingTop || 0);
-    const shH = semHeader.offsetHeight;
-    const pwBorder = 1; // phase-wrap border
-    const gap = 4; // grid gap
-    labelsCol.style.paddingTop = (pwBorder + phH + psP + shH + gap) + 'px';
-  }
+}
+
+function alignLabels() {
+  setTimeout(() => {
+    const labelsCol = document.querySelector('.type-labels-col');
+    const firstCard = document.querySelector('#semGrid .course-card');
+    const estudio = document.querySelector('.tl-estudio');
+    if (!labelsCol || !firstCard || !estudio) return;
+    // Reset and measure
+    labelsCol.style.paddingTop = '0';
+    requestAnimationFrame(() => {
+      const diff = firstCard.getBoundingClientRect().top - estudio.getBoundingClientRect().top;
+      labelsCol.style.paddingTop = Math.max(0, diff) + 'px';
+    });
+  }, 50);
 }
 
 applyReticula();
