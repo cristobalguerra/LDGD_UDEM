@@ -1748,8 +1748,11 @@ function applyReticula() {
     const usedRows = new Set();
     const laneCount = {};
     const floaters = [];
+    const emptySlots = [];
 
+    // First pass: assign rows to real cards only
     cards.forEach(card => {
+      if (card.classList.contains('conc-slot-empty')) { emptySlots.push(card); return; }
       const t = card.dataset.type;
       if (t === 'proyecto') { floaters.push(card); return; }
       const lane = TYPE_ROW_START[t];
@@ -1760,6 +1763,23 @@ function applyReticula() {
       const row = lane.start + Math.min(nth, lane.slots - 1);
       card.style.gridRow = row;
       usedRows.add(row);
+    });
+
+    // Second pass: empty slots fill remaining concentration rows
+    emptySlots.forEach(slot => {
+      const lane = TYPE_ROW_START['certificado'];
+      if (!lane) return;
+      for (let s = 0; s < lane.slots; s++) {
+        const r = lane.start + s;
+        if (!usedRows.has(r)) {
+          slot.style.gridRow = r;
+          usedRows.add(r);
+          col.appendChild(slot);
+          return;
+        }
+      }
+      // No free row — remove extra empty slot
+      slot.remove();
     });
 
     floaters.forEach(card => {
