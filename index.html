@@ -232,7 +232,7 @@ body {
 .pw-5 .phase-semesters { grid-template-columns: 1fr; }
 
 .semester-col {
-  display:grid;
+  display:flex; flex-direction:column;
   gap:4px; min-width:0;
   align-content:start;
 }
@@ -1764,65 +1764,44 @@ TYPE_LANES.forEach(lane => {
 const TOTAL_ROWS = _gridRow - 1;
 
 function applyReticula() {
-  const CARD_H = 78; // fixed card height in px
-
   document.querySelectorAll('.semester-col').forEach(col => {
     const cards = [...col.querySelectorAll('.course-card')];
-    // Sort by type
     cards.sort((a, b) => (TYPE_ORDER[a.dataset.type] ?? 99) - (TYPE_ORDER[b.dataset.type] ?? 99));
-    cards.forEach(c => col.appendChild(c));
-
-    const header = col.querySelector('.sem-header');
-    if (header) header.style.gridRow = '1';
-
-    // Assign grid rows and track which rows are used
-    const usedRows = new Set();
-    const laneCount = {};
-    cards.forEach(card => {
-      const t = card.dataset.type;
-      const lane = TYPE_ROW[t];
-      if (!lane) return;
-      const nth = laneCount[lane.start] || 0;
-      laneCount[lane.start] = nth + 1;
-      const row = lane.start + Math.min(nth, lane.slots - 1);
-      card.style.gridRow = row;
-      card.style.height = CARD_H + 'px';
-      card.style.overflow = 'hidden';
-      usedRows.add(row);
+    cards.forEach(c => {
+      c.style.gridRow = '';
+      c.style.height = '';
+      c.style.overflow = '';
+      col.appendChild(c);
     });
-
-    // Build per-column grid template: 0px for empty rows
-    const rowTemplate = ['auto'];
-    for (let r = 2; r <= TOTAL_ROWS; r++) {
-      rowTemplate.push(usedRows.has(r) ? CARD_H + 'px' : '0px');
-    }
-    col.style.gridTemplateRows = rowTemplate.join(' ');
   });
 
-  // Set label heights and spacer to match actual grid
-  // Measure from first semester column's grid
-  const firstCol = document.querySelector('.semester-col');
-  if (firstCol) {
-    const header = firstCol.querySelector('.sem-header');
+  // Measure actual type lane heights from the tallest semester
+  setTimeout(() => {
+    const typeToLane = { estudio:'estudio', disciplinar:'disciplinar', practicas:'disciplinar',
+      sinergia:'sinergia', certificado:'certificado', proyecto:'certificado',
+      formacion:'formacion', general:'general' };
+    const laneHeights = {};
+    document.querySelectorAll('.semester-col').forEach(col => {
+      const laneH = {};
+      [...col.querySelectorAll('.course-card')].forEach(card => {
+        const lane = typeToLane[card.dataset.type] || 'general';
+        laneH[lane] = (laneH[lane] || 0) + card.offsetHeight + 4;
+      });
+      for (const [lane, h] of Object.entries(laneH)) {
+        laneHeights[lane] = Math.max(laneHeights[lane] || 0, h);
+      }
+    });
     const spacer = document.querySelector('.type-label-spacer');
-    if (header && spacer) {
-      spacer.style.height = (header.offsetHeight + 4) + 'px'; // +4 for gap
+    const firstHeader = document.querySelector('.sem-header');
+    if (spacer && firstHeader) spacer.style.height = firstHeader.offsetHeight + 'px';
+    const labelMap = { estudio:'.tl-estudio', disciplinar:'.tl-disciplinar',
+      sinergia:'.tl-sinergia', certificado:'.tl-certificado',
+      formacion:'.tl-formacion', general:'.tl-general' };
+    for (const [lane, sel] of Object.entries(labelMap)) {
+      const el = document.querySelector(sel);
+      if (el) el.style.height = (laneHeights[lane] || 40) + 'px';
     }
-  }
-  const labelMap = [
-    ['.tl-estudio', 1],
-    ['.tl-disciplinar', 4],
-    ['.tl-sinergia', 1],
-    ['.tl-certificado', 2],
-    ['.tl-formacion', 1],
-    ['.tl-general', 1],
-  ];
-  labelMap.forEach(([sel, slots]) => {
-    const el = document.querySelector(sel);
-    if (el) {
-      el.style.height = (slots * CARD_H + (slots - 1) * 4) + 'px';
-    }
-  });
+  }, 50);
 }
 
 applyReticula();
