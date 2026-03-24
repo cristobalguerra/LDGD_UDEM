@@ -1773,16 +1773,24 @@ function applyReticula() {
     });
   });
 
-  // Phase 2: measure tallest card per grid-row across ALL semesters (skip empty slots)
+  // Phase 2: measure tallest card per grid-row across ALL semesters
   const rowHeights = {};
   document.querySelectorAll('#semGrid .course-card').forEach(card => {
     const r = card.style.gridRow;
     if (!r) return;
-    if (card.classList.contains('conc-slot-empty')) return; // don't measure empties
+    if (card.classList.contains('conc-slot-empty')) return; // measure only filled cards
     card.style.height = 'auto';
     const h = card.scrollHeight;
     rowHeights[r] = Math.max(rowHeights[r] || 0, h);
   });
+  // Ensure concentration lanes have a minimum height even if only empties exist
+  const concLane = TYPE_ROW_START['certificado'];
+  if (concLane) {
+    for (let s = 0; s < concLane.slots; s++) {
+      const r = concLane.start + s;
+      if (!rowHeights[r] || rowHeights[r] < 60) rowHeights[r] = Math.max(rowHeights[r] || 0, 60);
+    }
+  }
 
   // Phase 3: build grid-template-rows and apply uniform height
   const rowTemplate = ['auto']; // row 1 = header
@@ -1795,8 +1803,13 @@ function applyReticula() {
     col.style.gridTemplateRows = rowTemplate.join(' ');
   });
 
-  // Set card heights to match their row
+  // Set card heights to match their row (including empty slots)
   document.querySelectorAll('#semGrid .course-card').forEach(card => {
+    const r = card.style.gridRow;
+    if (r && rowHeights[r]) card.style.height = rowHeights[r] + 'px';
+  });
+  // Also set empty slot heights
+  document.querySelectorAll('#semGrid .conc-slot-empty').forEach(card => {
     const r = card.style.gridRow;
     if (r && rowHeights[r]) card.style.height = rowHeights[r] + 'px';
   });
