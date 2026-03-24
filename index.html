@@ -1495,11 +1495,7 @@ body.role-admin #modalBadge { display:none; }
         <li>Creative lead</li>
       </ul>
       <div class="cert-section-label">Materias</div>
-      <div class="cert-materias">
-        <div class="cert-materia"><span class="cert-materia-code">A1</span><span class="cert-materia-name">Dirección de Arte y Fotografía de Producto</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">A2</span><span class="cert-materia-name">Sistemas de Diseño Avanzado</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">A3</span><span class="cert-materia-name">IA Aplicada al Diseño Visual</span></div>
-      </div>
+      <div class="cert-materias" id="cert-a-materias"></div>
       <div class="cert-note">Sin prerrequisitos · Sems. 4, 5 y 6</div>
     </div>
 
@@ -1517,12 +1513,8 @@ body.role-admin #modalBadge { display:none; }
         <li>Emprendedor de diseño</li>
       </ul>
       <div class="cert-section-label">Materias</div>
-      <div class="cert-materias">
-        <div class="cert-materia"><span class="cert-materia-code">B1</span><span class="cert-materia-name">Diseño Estratégico e Innovación</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">B2</span><span class="cert-materia-name">Gestión e Implementación de Proyectos de Diseño</span></div>
-        <div class="cert-materia"><span class="cert-materia-code">B3</span><span class="cert-materia-name">Emprendimiento y Modelos de Negocio para el Diseño</span></div>
-      </div>
-      <div class="cert-note">Sin prerrequisitos · Sems. 7 y 8</div>
+      <div class="cert-materias" id="cert-b-materias"></div>
+      <div class="cert-note">Sin prerrequisitos · Sems. 4, 7 y 8</div>
     </div>
   </div>
 </div>
@@ -1828,6 +1820,23 @@ function alignLabels() {
 
 applyReticula();
 window.addEventListener('load', () => setTimeout(applyReticula, 100));
+
+// ===== SYNC CONCENTRATION NAMES FROM MALLA TO CONCENTRACIONES PAGE =====
+function syncConcNames() {
+  const concA = document.getElementById('cert-a-materias');
+  const concB = document.getElementById('cert-b-materias');
+  if (!concA || !concB) return;
+  // Read names from malla cards
+  const aCards = [...document.querySelectorAll('#semGrid .conc-a .card-name')];
+  const bCards = [...document.querySelectorAll('#semGrid .conc-b .card-name')];
+  concA.innerHTML = aCards.map((n, i) =>
+    '<div class="cert-materia"><span class="cert-materia-code">A' + (i+1) + '</span><span class="cert-materia-name">' + n.textContent.trim() + '</span></div>'
+  ).join('');
+  concB.innerHTML = bCards.map((n, i) =>
+    '<div class="cert-materia"><span class="cert-materia-code">B' + (i+1) + '</span><span class="cert-materia-name">' + n.textContent.trim() + '</span></div>'
+  ).join('');
+}
+syncConcNames();
 
 // ===== PREREQUISITE / SERIACIÓN SYSTEM =====
 // Default chains (used if no custom prereqs saved in Firebase)
@@ -2972,6 +2981,7 @@ function applyNameTypeChange() {
   recalcCredits();
   saveCustomizations();
   saveLayout();
+  syncConcNames();
 }
 
 modalTypeSelect.addEventListener('change', applyNameTypeChange);
