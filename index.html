@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <style>
@@ -2561,42 +2562,39 @@ document.getElementById('btnDownloadMap').addEventListener('click', generateMapP
 document.getElementById('btnDownloadPlan').addEventListener('click', generatePlanPDF);
 
 async function generateMapPDF() {
-  if (!window.jspdf) { alert('La librería PDF aún no carga. Espera unos segundos e intenta de nuevo.'); return; }
+  if (!window.jspdf || !window.html2canvas) { alert('Las librerías aún no cargan. Espera unos segundos e intenta de nuevo.'); return; }
+  const btn = document.getElementById('btnDownloadMap');
+  btn.innerHTML = 'Generando...';
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('l', 'mm', 'a3');
-  const pw = doc.internal.pageSize.getWidth();
-  const ph = doc.internal.pageSize.getHeight();
-  const footer = () => { doc.setFontSize(6); doc.setTextColor(170); doc.text('LDV Plan 2027 · Universidad de Monterrey · ' + new Date().toLocaleDateString('es-MX'), 15, ph - 8); };
   const certNames = { a:'Concentración A: Dirección de Marca y Diseño Visual', b:'Concentración B: Diseño Estratégico y Gestión' };
 
-  // ===== PAGE 1: MAPA CURRICULAR =====
-  doc.setFontSize(8); doc.setTextColor(150); doc.text('UDEM · CRGS', 15, 15);
-  doc.setFontSize(18); doc.setTextColor(30); doc.text('LDV · Licenciatura en Diseño Visual y Negocios Creativos', 15, 24);
-  doc.setFontSize(10); doc.setTextColor(100); doc.text('Plan 2027 · ' + document.querySelector('.credits-badge').textContent.split('·').pop().trim(), 15, 31);
-  if (selectedCerts.length) { doc.text('Concentraciones: ' + selectedCerts.map(c => certNames[c]).join(' + '), 15, 37); }
-  const startY = 44; const colW = (pw - 30) / 9;
-  document.querySelectorAll('.semester-col').forEach((col, i) => {
-    const x = 15 + i * colW; let y = startY;
-    const semNum = col.querySelector('.sem-num')?.textContent || '';
-    const semCr = col.querySelector('.sem-cr')?.textContent || '';
-    doc.setFillColor(240,240,240); doc.rect(x, y, colW - 2, 12, 'F');
-    doc.setFontSize(7); doc.setTextColor(100); doc.text(semNum, x + 3, y + 5);
-    doc.setFontSize(10); doc.setTextColor(30); doc.text(semCr + ' cr', x + 3, y + 10);
-    y += 15;
-    col.querySelectorAll('.course-card').forEach(card => {
-      const name = card.querySelector('.card-name')?.textContent || '';
-      const type = card.querySelector('.card-type')?.textContent || '';
-      const cr = card.querySelector('.card-credits')?.textContent || '';
-      const lines = doc.splitTextToSize(name, colW - 8);
-      const cardH = Math.max(14, 8 + lines.length * 4);
-      doc.setFillColor(248,248,248); doc.setDrawColor(220); doc.rect(x, y, colW - 2, cardH, 'FD');
-      doc.setFontSize(5); doc.setTextColor(140); doc.text(type.toUpperCase(), x + 3, y + 4);
-      doc.setFontSize(6.5); doc.setTextColor(40); doc.text(lines, x + 3, y + 8);
-      doc.setFontSize(5); doc.setTextColor(140); doc.text(cr, x + 3, y + cardH - 2);
-      y += cardH + 2;
-    });
+  // Capture the malla view as image
+  const mapaView = document.getElementById('view-mapa');
+  const canvas = await html2canvas(mapaView, {
+    backgroundColor: '#000000',
+    scale: 2,
+    useCORS: true,
+    logging: false,
   });
+
+  // Calculate PDF dimensions to fit the captured image
+  const imgW = canvas.width;
+  const imgH = canvas.height;
+  const ratio = imgW / imgH;
+  // Use landscape A3 or wider if needed
+  const doc = new jsPDF(ratio > 1 ? 'l' : 'p', 'mm', 'a3');
+  const pw = doc.internal.pageSize.getWidth();
+  const ph = doc.internal.pageSize.getHeight();
+  const margin = 10;
+  const fitW = pw - margin * 2;
+  const fitH = fitW / ratio;
+  const imgData = canvas.toDataURL('image/jpeg', 0.92);
+  doc.addImage(imgData, 'JPEG', margin, margin, fitW, Math.min(fitH, ph - margin * 2));
+
+  const footer = () => { doc.setFontSize(6); doc.setTextColor(170); doc.text('LDV Plan 2027 · Universidad de Monterrey · ' + new Date().toLocaleDateString('es-MX'), 15, ph - 5); };
   footer();
+
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF';
 
   // ===== PAGE 2: CONCENTRACIONES =====
   if (selectedCerts.length) {
