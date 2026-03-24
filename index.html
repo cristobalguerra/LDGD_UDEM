@@ -144,6 +144,60 @@ body {
 
 /* Phase headers */
 /* Malla with type labels */
+/* Journey strip */
+.journey-strip {
+  display:flex; gap:2px; margin-bottom:0; padding:0 0 0 44px;
+}
+.journey-sem {
+  flex:1; padding:10px 8px; text-align:center; cursor:pointer;
+  border-radius:10px 10px 0 0; transition:all 0.25s;
+  background:var(--surface-2); border:1px solid var(--border); border-bottom:none;
+  position:relative;
+}
+.journey-sem:hover { background:var(--surface-3); }
+.journey-sem.active { background:var(--surface); border-color:var(--accent); }
+.journey-sem.active::after {
+  content:''; position:absolute; bottom:-1px; left:10%; right:10%;
+  height:2px; background:var(--accent); border-radius:2px;
+}
+.journey-sem-num {
+  font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:700;
+  color:var(--text-tertiary); letter-spacing:0.08em;
+}
+.journey-sem.active .journey-sem-num { color:var(--accent); }
+.journey-sem-phase {
+  font-size:0.6rem; color:var(--text-tertiary); margin-top:3px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.journey-panel {
+  display:none; padding:24px 28px; margin:0 0 16px 44px;
+  background:var(--surface); border:1px solid var(--accent);
+  border-top:none; border-radius:0 0 14px 14px;
+  animation:fadeIn 0.3s;
+}
+.journey-panel.active { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.journey-col h4 {
+  font-family:'Raleway',sans-serif; font-size:0.95rem; font-weight:700;
+  color:var(--accent); margin-bottom:12px; text-transform:uppercase;
+  letter-spacing:0.05em;
+}
+.journey-col ul { list-style:none; padding:0; margin:0; }
+.journey-col li {
+  font-family:'DM Sans',sans-serif; font-size:0.88rem; color:var(--text-secondary);
+  padding:6px 0; border-bottom:1px solid var(--border); line-height:1.45;
+}
+.journey-col li:last-child { border-bottom:none; }
+.journey-col li::before { content:'→ '; color:var(--text-tertiary); }
+.journey-skill::before { content:'✓ ' !important; color:var(--accent) !important; }
+.journey-comp-badges { display:flex; flex-wrap:wrap; gap:5px; margin-top:12px; }
+.journey-comp-badge {
+  font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600;
+  padding:4px 8px; border-radius:4px;
+}
+.jcb-I { background:rgba(61,140,130,0.2); color:#3D8C82; }
+.jcb-D { background:rgba(113,116,178,0.2); color:#7174B2; }
+.jcb-M { background:rgba(255,245,0,0.15); color:var(--accent); }
+
 .malla-with-labels {
   display:flex; gap:0; align-items:stretch;
 }
@@ -1375,6 +1429,9 @@ body.role-admin #modalBadge { display:none; }
 <!-- ===== MAPA VIEW ===== -->
 <div class="view active" id="view-mapa">
 
+  <div class="journey-strip" id="journeyStrip"></div>
+  <div class="journey-panel" id="journeyPanel"></div>
+
   <div class="malla-with-labels">
     <div class="type-labels-col">
       <div class="type-label-spacer"></div>
@@ -1914,6 +1971,110 @@ window.addEventListener('load', () => setTimeout(applyReticula, 100));
 
 // Clean up any leftover competency badges from previous version
 document.querySelectorAll('.card-comp-badges').forEach(b => b.remove());
+
+// ===== JOURNEY STRIP =====
+const SEM_JOURNEY = [
+  { phase:'Fundamentos', skills:[
+    'Crea composiciones visuales con criterio estético y funcional',
+    'Maneja herramientas digitales profesionales de diseño',
+    'Comprende la historia y el contexto cultural del diseño',
+    'Comunica ideas mediante esquemas y pensamiento visual'
+  ]},
+  { phase:'Fundamentos', skills:[
+    'Domina color, tipografía e imagen en narrativas visuales',
+    'Ilustra con técnicas análogas y digitales',
+    'Fundamenta decisiones de diseño con análisis semiótico',
+    'Compone textos con jerarquía tipográfica profesional'
+  ]},
+  { phase:'Sist. Identidad', skills:[
+    'Diseña una marca completa: logo, paleta y manual de identidad',
+    'Organiza información compleja en infografías y visualizaciones',
+    'Realiza fotografía profesional con iluminación controlada',
+    'Dirige proyectos creativos audiovisuales en equipo'
+  ]},
+  { phase:'Sist. Identidad', skills:[
+    'Diseña sistemas de información y dashboards interactivos',
+    'Gestiona presupuestos y producción de proyectos de diseño',
+    'Diseña empaques funcionales, estéticos y sustentables',
+    'Dirige sesiones de fotografía y dirección de arte'
+  ]},
+  { phase:'Sist. Identidad', skills:[
+    'Implementa marcas en ecosistemas digitales completos',
+    'Cuenta con un portafolio profesional competitivo',
+    'Anticipa tendencias y diseña para escenarios futuros',
+    'Toma decisiones de diseño fundamentadas con datos y metodología'
+  ]},
+  { phase:'Exper. / Interac.', skills:[
+    'Diseña aplicaciones y experiencias digitales centradas en el usuario',
+    'Prototipa y valida soluciones con usuarios reales',
+    'Integra inteligencia artificial en su proceso creativo',
+    'Desarrolla proyectos artísticos interdisciplinarios'
+  ]},
+  { phase:'Dir. Estratégica', skills:[
+    'Diseña servicios completos vinculados a modelos de negocio',
+    'Se desempeña en una empresa o estudio real (prácticas profesionales)',
+    'Investiga con metodología rigurosa para fundamentar proyectos',
+    'Conecta diseño con estrategia organizacional e innovación'
+  ]},
+  { phase:'Dir. Estratégica', skills:[
+    'Dirige un proyecto integral de diseño de alta complejidad',
+    'Desarrolla modelos de negocio viables para proyectos creativos',
+    'Emprende y valida ideas con metodología lean startup',
+    'Conceptualiza su proyecto terminal con fundamentación sólida'
+  ]},
+  { phase:'Proy. Profesional', skills:[
+    'Ejecuta un proyecto terminal con excelencia técnica y conceptual',
+    'Defiende su proyecto ante comité evaluador profesional',
+    'Está preparado para integrarse al mundo laboral o emprender'
+  ]},
+];
+
+function buildJourneyStrip() {
+  const strip = document.getElementById('journeyStrip');
+  const panel = document.getElementById('journeyPanel');
+  if (!strip || !panel) return;
+  strip.innerHTML = '';
+  const semCols = document.querySelectorAll('.semester-col');
+
+  for (let i = 0; i < 9; i++) {
+    const sem = document.createElement('div');
+    sem.className = 'journey-sem';
+    sem.dataset.sem = i;
+    sem.innerHTML = '<div class="journey-sem-num">S' + (i+1) + '</div><div class="journey-sem-phase">' + SEM_JOURNEY[i].phase + '</div>';
+    sem.addEventListener('click', () => {
+      document.querySelectorAll('.journey-sem').forEach(s => s.classList.remove('active'));
+      sem.classList.add('active');
+
+      const col = semCols[i];
+      const courses = [...col.querySelectorAll('.course-card')].map(c => c.querySelector('.card-name')?.textContent.trim()).filter(Boolean);
+
+      const compData = {};
+      col.querySelectorAll('.course-card').forEach(card => {
+        const name = card.querySelector('.card-name')?.textContent.trim() || '';
+        const slug = name.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+        const comps = SUGGESTED_COMPS[slug];
+        if (comps) Object.entries(comps).forEach(([cid,lvl]) => {
+          if (!compData[cid] || 'IDM'.indexOf(lvl) > 'IDM'.indexOf(compData[cid])) compData[cid] = lvl;
+        });
+      });
+
+      const compBadges = Object.entries(compData).map(([cid,lvl]) =>
+        '<span class="journey-comp-badge jcb-' + lvl + '">' + cid + ':' + lvl + '</span>'
+      ).join('');
+
+      panel.className = 'journey-panel active';
+      panel.innerHTML =
+        '<div class="journey-col"><h4>Materias del semestre</h4><ul>' +
+        courses.map(c => '<li>' + c + '</li>').join('') +
+        '</ul><div class="journey-comp-badges">' + compBadges + '</div></div>' +
+        '<div class="journey-col"><h4>El diseñador visual en formación ya puede:</h4><ul>' +
+        SEM_JOURNEY[i].skills.map(s => '<li class="journey-skill">' + s + '</li>').join('') +
+        '</ul></div>';
+    });
+    strip.appendChild(sem);
+  }
+}
+buildJourneyStrip();
 
 // ===== SYNC CONCENTRATION NAMES FROM MALLA TO CONCENTRACIONES PAGE =====
 function syncConcNames() {
