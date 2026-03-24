@@ -2139,16 +2139,22 @@ function handleSeriacionLeave(e) {
 
 // ===== COMPETENCIAS DATA =====
 const COMPETENCIAS = [
-  { id:'C1', label:'Dominio del lenguaje visual y comunicación gráfica', desc:'Capacidad de articular forma, color, tipografía, imagen y composición para comunicar con claridad, coherencia y calidad estética.' },
-  { id:'C2', label:'Diseño y gestión de sistemas de identidad visual', desc:'Concepción, estructuración y gestión de sistemas de identidad que articulen marca, soportes y contextos con visión estratégica.' },
-  { id:'C3', label:'Diseño de experiencia, información e interacción', desc:'Investigación, diseño y validación de experiencias centradas en el usuario, integrando arquitectura de información, interfaz e interacción.' },
-  { id:'C4', label:'Dirección estratégica y gestión de proyectos de diseño', desc:'Planificación, coordinación y evaluación de proyectos integrales de diseño, vinculando objetivos creativos con resultados medibles.' },
-  { id:'C5', label:'Gestión de producción y tecnología digital', desc:'Dominio de procesos productivos, herramientas digitales y tecnologías emergentes para la implementación eficiente de soluciones de diseño.' },
-  { id:'C6', label:'Pensamiento crítico, investigación y fundamentación', desc:'Aplicación de metodologías de investigación y análisis crítico para fundamentar decisiones de diseño con rigor intelectual.' },
-  { id:'C7', label:'Innovación, creatividad y pensamiento prospectivo', desc:'Generación de soluciones originales mediante pensamiento creativo, especulativo y prospectivo ante contextos complejos.' },
-  { id:'C8', label:'Liderazgo, colaboración y comunicación profesional', desc:'Capacidad de liderar equipos, argumentar propuestas y comunicar ideas de manera efectiva en contextos multidisciplinarios.' },
-  { id:'C9', label:'Ética profesional, responsabilidad social y sostenibilidad', desc:'Ejercicio de la práctica profesional con criterio ético, conciencia social, cultural y compromiso con la sostenibilidad.' },
-  { id:'C10', label:'Emprendimiento, modelos de negocio y visión empresarial', desc:'Diseño y validación de emprendimientos creativos, vinculando diseño con estrategia de negocios y generación de valor.' }
+  { id:'C1', label:'Lenguaje visual y comunicación gráfica',
+    desc:'Concibe y desarrolla proyectos de comunicación visual, articulando forma, color, tipografía, imagen y composición con criterio estético y funcional, aplicando los principios del lenguaje visual para generar mensajes claros, coherentes y con impacto comunicativo en contextos culturales, sociales y comerciales diversos.' },
+  { id:'C2', label:'Sistemas de identidad visual y de marca',
+    desc:'Diseña, estructura y gestiona sistemas de identidad visual y de marca, integrando investigación, estrategia y producción en múltiples soportes y plataformas, para construir ecosistemas de marca coherentes, diferenciados y sostenibles que generen valor para organizaciones y audiencias.' },
+  { id:'C3', label:'Diseño de experiencia, información e interacción',
+    desc:'Investiga, diseña y valida experiencias centradas en el usuario, integrando arquitectura de información, diseño de interfaz, interacción y prototipado, para resolver problemáticas complejas de comunicación y servicio que conecten de manera eficaz con las necesidades y expectativas de las personas.' },
+  { id:'C4', label:'Dirección estratégica y gestión de proyectos',
+    desc:'Planifica, coordina y dirige proyectos integrales de diseño, aplicando metodologías de gestión, evaluación de resultados y toma de decisiones fundamentada, para vincular objetivos creativos con resultados estratégicos medibles en contextos organizacionales y multidisciplinarios.' },
+  { id:'C5', label:'Producción, tecnología e implementación',
+    desc:'Domina procesos de producción gráfica y digital, herramientas profesionales y tecnologías emergentes, para implementar soluciones de diseño con calidad técnica, viabilidad productiva y aprovechamiento estratégico de los recursos tecnológicos, incluyendo inteligencia artificial aplicada.' },
+  { id:'C6', label:'Investigación, pensamiento crítico y fundamentación',
+    desc:'Aplica metodologías de investigación cualitativa y cuantitativa, análisis crítico y fundamentación conceptual, para sustentar decisiones de diseño con rigor intelectual, generando conocimiento accionable que oriente la concepción y desarrollo de proyectos creativos y estratégicos.' },
+  { id:'C7', label:'Innovación, creatividad y visión prospectiva',
+    desc:'Genera soluciones originales e innovadoras mediante pensamiento creativo, especulativo y prospectivo, anticipando escenarios futuros y diseñando propuestas que respondan a contextos sociales, culturales, tecnológicos y ambientales emergentes con visión transformadora y sostenible.' },
+  { id:'C8', label:'Liderazgo, emprendimiento y ética profesional',
+    desc:'Lidera equipos multidisciplinarios, comunica y argumenta propuestas con claridad profesional, diseña y valida emprendimientos creativos vinculados a modelos de negocio, y ejerce su práctica con ética, responsabilidad social y compromiso con la sostenibilidad, generando valor e impacto positivo en su entorno.' }
 ];
 
 // ===== COURSE OBJECTIVES =====
@@ -2387,35 +2393,35 @@ const SUGGESTED_COMPS = {
   // ═══ SEM 1 — INTRODUCE ═══
   'diseño-visual-i-principios-y-composición':{C1:'I',C7:'I'},
   'visualización-y-pensamiento-de-diseño':{C1:'I',C6:'I',C7:'I'},
-  'contexto-cultural-del-diseño':{C6:'I',C9:'I'},
+  'contexto-cultural-del-diseño':{C6:'I',C8:'I'},
   'herramientas-digitales-para-el-diseño':{C5:'I'},
-  'tecnologías-emergentes':{C5:'I',C9:'I'},
+  'tecnologías-emergentes':{C5:'I',C8:'I'},
   // ═══ SEM 2 — INTRODUCE → DEVELOP ═══
   'diseño-visual-ii-forma-color-y-estructura':{C1:'D',C7:'I'},
   'tipografía-i-fundamentos':{C1:'I',C5:'I'},
   'ilustración-aplicada':{C1:'I',C7:'I'},
   'lenguaje-y-significado-en-el-diseño':{C1:'I',C6:'I',C8:'I'},
-  'etica-social-cristiana':{C9:'I'},
+  'etica-social-cristiana':{C8:'I'},
   // ═══ SEM 3 — DEVELOP ═══
   'identidad-de-marca-i-fundamentos':{C1:'D',C2:'I',C7:'D'},
   'diseño-de-información-i':{C3:'I',C6:'D'},
   'fotografía-para-diseño':{C1:'D',C5:'I'},
   'tipografía-ii-aplicaciones':{C1:'D',C2:'I'},
   'direc-creat-para-med-audiovis-e-interac':{C1:'D',C5:'I',C7:'D',C8:'I'},
-  'antropología-filosófica':{C6:'I',C9:'I'},
+  'antropología-filosófica':{C6:'I',C8:'I'},
   // ═══ SEM 4 — DEVELOP ═══
   'diseño-de-información-ii-sistemas-de-información':{C2:'D',C3:'D',C5:'D',C6:'D'},
   'gestión-de-producción':{C4:'I',C5:'D'},
   'diseño-de-empaque':{C1:'D',C2:'D',C5:'D'},
-  'emprendimiento-con-propósito':{C9:'D',C10:'I'},
-  // SEM 4 CONCENTRACIONES (opcionales — no cuentan para egreso)
+  'emprendimiento-con-propósito':{C8:'I'},
+  // SEM 4 CONCENTRACIONES (opcionales)
   'dir-de-arte-y-fotografía':{C1:'D',C5:'D'},
-  'gestión-de-proyectos-de-diseño':{C4:'I',C10:'I'},
+  'gestión-de-proyectos-de-diseño':{C4:'I',C8:'I'},
   // ═══ SEM 5 — DEVELOP → MASTER ═══
   'identidad-de-marca-ii-implementación':{C1:'M',C2:'D',C7:'D'},
   'portafolio-profesional':{C1:'D',C8:'D'},
   'diseño-de-futuros-pendientes':{C4:'D',C6:'D',C7:'D'},
-  'pensamiento-de-futuros-sociales':{C6:'D',C9:'D'},
+  'pensamiento-de-futuros-sociales':{C6:'D',C8:'D'},
   // SEM 5 CONCENTRACIÓN (opcional)
   'toma-de-decisiones-en-procesos-de-diseño':{C4:'D',C6:'D',C8:'D'},
   // ═══ SEM 6 — DEVELOP → MASTER ═══
@@ -2426,19 +2432,19 @@ const SUGGESTED_COMPS = {
   // SEM 6 CONCENTRACIÓN (opcional)
   'inteligencia-artificial-para-diseño':{C5:'D',C7:'D'},
   // ═══ SEM 7 — MASTER ═══
-  'diseño-de-servicios':{C3:'M',C4:'D',C8:'D',C10:'D'},
-  'prácticas-profesionales':{C4:'D',C5:'M',C8:'M',C9:'M'},
+  'diseño-de-servicios':{C3:'M',C4:'D',C8:'D'},
+  'prácticas-profesionales':{C4:'D',C5:'M',C8:'M'},
   'innovación-en-diseño':{C4:'D',C6:'M',C7:'M'},
   // SEM 7 CONCENTRACIÓN (opcional)
-  'diseño-estratégico-e-innovación':{C4:'D',C7:'D',C10:'D'},
+  'diseño-estratégico-e-innovación':{C4:'D',C7:'D',C8:'D'},
   // ═══ SEM 8 — MASTER ═══
   'estudio-integral-de-diseño':{C1:'M',C2:'M',C3:'M',C4:'M',C7:'M'},
   'proyecto-de-evaluación-final-i':{C4:'M',C6:'M',C8:'M'},
-  'negocios-pendiente':{C4:'M',C10:'M'},
+  'negocios-pendiente':{C4:'M',C8:'M'},
   // SEM 8 CONCENTRACIÓN (opcional)
-  'emprendimiento-en-diseño':{C10:'D',C4:'D'},
+  'emprendimiento-en-diseño':{C8:'D',C4:'D'},
   // ═══ SEM 9 — MASTER ═══
-  'proyecto-de-evaluación-final-ii':{C1:'M',C4:'M',C6:'M',C7:'M',C8:'M',C9:'M'},
+  'proyecto-de-evaluación-final-ii':{C1:'M',C4:'M',C6:'M',C7:'M',C8:'M'},
 };
 
 // Competency info available in modal only (not on cards)
