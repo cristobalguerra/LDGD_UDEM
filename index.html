@@ -1987,17 +1987,37 @@ body.role-admin #modalBadge { display:none; }
   <div class="programa-content" style="max-width:900px;">
 
     <!-- Professor login -->
-    <div id="valLogin" style="text-align:center;padding:60px 20px;">
-      <h2 style="font-family:'Raleway',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:8px;">Validación Curricular</h2>
-      <p style="font-size:1rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Evalúa cada componente del plan de estudios LDV 2027.</p>
-      <div style="display:flex;gap:24px;justify-content:center;margin-bottom:32px;">
-        <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:50%;background:#4caf50;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text-secondary);">Adecuado</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:50%;background:#ffc107;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text-secondary);">Ajustar</span></div>
-        <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:50%;background:#f44336;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text-secondary);">Reconsiderar</span></div>
+    <div id="valLogin" style="padding:40px 20px;">
+
+      <!-- Formal header -->
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-family:'DM Sans',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:8px;">Universidad de Monterrey · CRGS · Escuela de Arte y Diseño</div>
+        <h2 style="font-family:'Raleway',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:4px;">Instrumento de Validación Curricular</h2>
+        <div style="font-size:1rem;color:var(--accent);font-weight:600;">Licenciatura en Diseño Visual y Negocios Creativos · Plan 2027</div>
       </div>
-      <div style="display:flex;gap:10px;max-width:420px;margin:0 auto;">
-        <input id="valName" type="text" placeholder="Tu nombre completo" style="flex:1;padding:14px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:1rem;font-family:'DM Sans',sans-serif;">
-        <button id="valStart" style="padding:14px 28px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:1rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Iniciar</button>
+
+      <!-- Formal document -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:32px;text-align:left;max-width:720px;margin-left:auto;margin-right:auto;">
+        <h3 style="font-family:'Raleway',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:16px;">Presentación</h3>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">El presente instrumento tiene como propósito recabar la opinión de profesores, especialistas y profesionales del diseño respecto a la pertinencia, coherencia y viabilidad de los componentes del plan de estudios de la Licenciatura en Diseño Visual y Negocios Creativos, Plan 2027.</p>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">La validación curricular es un proceso fundamental dentro del diseño y rediseño de programas académicos. Permite incorporar la perspectiva de expertos disciplinares para garantizar que el plan de estudios responda a las necesidades del campo profesional, las tendencias del sector y los estándares de calidad educativa.</p>
+
+        <h3 style="font-family:'Raleway',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:12px;margin-top:24px;">Instrucciones</h3>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">Se le solicita revisar los contenidos del plan de estudios disponibles en las pestañas <strong style="color:var(--text);">Programa</strong>, <strong style="color:var(--text);">Mapa</strong> y <strong style="color:var(--text);">Concentraciones</strong> antes de emitir su evaluación.</p>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;margin-bottom:10px;">Para cada componente, seleccione una de las tres opciones:</p>
+        <div style="display:flex;gap:20px;margin:16px 0 16px 8px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:50%;background:#4caf50;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text);"><strong>Adecuado</strong> — el componente es pertinente y no requiere cambios.</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:50%;background:#ffc107;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text);"><strong>Ajustar</strong> — el componente es pertinente pero requiere modificaciones. Se solicita describir la observación.</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:16px;height:16px;border-radius:50%;background:#f44336;display:inline-block;"></span><span style="font-size:0.95rem;color:var(--text);"><strong>Reconsiderar</strong> — el componente presenta inconsistencias o no es pertinente. Se solicita argumentar la observación.</span></div>
+        </div>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;">Sus respuestas serán tratadas de manera confidencial y serán utilizadas exclusivamente para fines de mejora curricular ante el Comité de Diseño Curricular de la Escuela de Arte y Diseño.</p>
+
+        <h3 style="font-family:'Raleway',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:12px;margin-top:24px;">Datos del evaluador</h3>
+        <p style="font-size:0.9rem;color:var(--text-tertiary);margin-bottom:12px;">Al ingresar su nombre, acepta participar voluntariamente en este proceso de validación curricular.</p>
+      </div>
+      <div style="display:flex;gap:10px;max-width:500px;margin:0 auto;">
+        <input id="valName" type="text" placeholder="Nombre completo del evaluador" style="flex:1;padding:14px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:1rem;font-family:'DM Sans',sans-serif;">
+        <button id="valStart" style="padding:14px 28px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:1rem;border:none;cursor:pointer;font-family:'Raleway',sans-serif;letter-spacing:0.02em;">Iniciar evaluación</button>
       </div>
     </div>
 
