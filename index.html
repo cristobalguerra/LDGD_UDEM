@@ -791,6 +791,81 @@ body {
   .nav-tab { padding:6px 12px; font-size:0.65rem; }
 }
 
+/* ===== VALIDATION ===== */
+.val-section {
+  margin-bottom:20px; border:1px solid var(--border); border-radius:12px;
+  overflow:hidden; background:var(--surface);
+}
+.val-section-head {
+  padding:14px 18px; background:var(--surface-2); cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center;
+  user-select:none;
+}
+.val-section-head:hover { background:var(--surface-3); }
+.val-section-title {
+  font-family:'Raleway',sans-serif; font-size:0.9rem; font-weight:700; color:var(--text);
+}
+.val-section-badge {
+  font-size:0.65rem; font-weight:600; color:var(--text-tertiary);
+  background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px;
+}
+.val-section-body { display:none; padding:16px 18px; }
+.val-section.open .val-section-body { display:block; }
+.val-section.open .val-section-head { border-bottom:1px solid var(--border); }
+
+.val-item {
+  padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.val-item:last-child { border-bottom:none; }
+.val-item-label {
+  font-size:0.85rem; color:var(--text); line-height:1.4; margin-bottom:10px;
+}
+.val-likert {
+  display:flex; gap:6px; margin-bottom:8px;
+}
+.val-likert-btn {
+  width:40px; height:36px; border-radius:8px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary); font-size:0.8rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'JetBrains Mono',monospace;
+}
+.val-likert-btn:hover { border-color:var(--accent); color:var(--accent); }
+.val-likert-btn.selected {
+  background:var(--accent); color:#000; border-color:var(--accent);
+}
+.val-comment {
+  width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font-size:0.78rem; resize:vertical;
+  min-height:32px; font-family:'DM Sans',sans-serif;
+}
+.val-comment::placeholder { color:var(--text-tertiary); }
+
+/* Dashboard */
+.val-dash-item {
+  padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.val-dash-label { font-size:0.82rem; color:var(--text); margin-bottom:6px; }
+.val-dash-bar-wrap {
+  display:flex; align-items:center; gap:10px;
+}
+.val-dash-bar {
+  flex:1; height:8px; background:var(--surface-3); border-radius:4px; overflow:hidden;
+}
+.val-dash-bar-fill {
+  height:100%; border-radius:4px; transition:width 0.5s;
+}
+.val-dash-score {
+  font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:700;
+  min-width:32px; text-align:right;
+}
+.val-dash-comments {
+  margin-top:6px; padding-left:12px;
+}
+.val-dash-comment {
+  font-size:0.72rem; color:var(--text-tertiary); line-height:1.4;
+  padding:3px 0; border-left:2px solid var(--border); padding-left:8px; margin-bottom:4px;
+}
+.val-dash-comment strong { color:var(--text-secondary); }
+
 /* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
   from { opacity:0; transform:translateY(8px); }
@@ -1345,6 +1420,7 @@ body.role-admin #modalBadge { display:none; }
         <button class="nav-tab active" data-view="mapa">Mapa</button>
         <button class="nav-tab" data-view="certificados">Concentraciones</button>
         <button class="nav-tab" data-view="investigacion">Investigación</button>
+        <button class="nav-tab" data-view="validacion">Validación</button>
       </div>
       <button class="btn-header" id="btnDownloadMap" title="Descargar mapa curricular PDF">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -1890,6 +1966,54 @@ body.role-admin #modalBadge { display:none; }
     <div class="programa-footer-note">
       Investigación con fuentes validadas: Data México (INEGI), IMCO Compara Carreras, CENEVAL, Jobted, Indeed, Glassdoor, CompuTrabajo, Baker Institute, World Economic Forum, World Bank, ADN40, UNCTAD (2024-2026).<br>
       Documento de uso interno · Sujeto a revisión y actualización.
+    </div>
+  </div>
+</div>
+
+<!-- ===== VALIDACIÓN VIEW ===== -->
+<div class="view" id="view-validacion">
+  <div class="programa-content" style="max-width:900px;">
+
+    <!-- Professor login -->
+    <div id="valLogin" style="text-align:center;padding:60px 20px;">
+      <h2 style="font-family:'Raleway',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:8px;">Instrumento de Validación</h2>
+      <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:32px;line-height:1.5;">Este instrumento permite a profesores y expertos evaluar los componentes del plan de estudios LDV 2027.<br>Los resultados se agregan de forma anónima para el análisis del comité curricular.</p>
+      <div style="display:flex;gap:10px;max-width:400px;margin:0 auto;">
+        <input id="valName" type="text" placeholder="Tu nombre completo" style="flex:1;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:0.9rem;font-family:'DM Sans',sans-serif;">
+        <button id="valStart" style="padding:12px 24px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:0.85rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Iniciar</button>
+      </div>
+    </div>
+
+    <!-- Validation instrument (hidden until login) -->
+    <div id="valInstrument" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div>
+          <h2 style="font-family:'Raleway',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:4px;">Validación del Plan LDV 2027</h2>
+          <p style="font-size:0.8rem;color:var(--text-secondary);">Evaluando como: <strong id="valWho" style="color:var(--accent);"></strong></p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="font-size:0.75rem;color:var(--text-tertiary);" id="valProgress">0 / 0</div>
+          <button id="valSubmit" style="padding:10px 20px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Enviar validación</button>
+        </div>
+      </div>
+
+      <!-- Scale legend -->
+      <div style="display:flex;gap:16px;padding:12px 16px;background:var(--surface-2);border-radius:10px;margin-bottom:20px;flex-wrap:wrap;">
+        <span style="font-size:0.75rem;color:var(--text-tertiary);font-weight:600;">ESCALA:</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">1 = Totalmente en desacuerdo</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">2 = En desacuerdo</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">3 = Neutral</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">4 = De acuerdo</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">5 = Totalmente de acuerdo</span>
+      </div>
+
+      <div id="valSections"></div>
+    </div>
+
+    <!-- Admin dashboard (hidden until admin login) -->
+    <div id="valDashboard" style="display:none;margin-top:32px;">
+      <h2 style="font-family:'Raleway',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:16px;">Resultados de Validación</h2>
+      <div id="valDashContent"></div>
     </div>
   </div>
 </div>
@@ -3831,6 +3955,278 @@ async function initApp() {
     document.getElementById('btnToBanco').style.display = 'none';
   }
 }
+
+// ===== VALIDATION SYSTEM =====
+(function() {
+  let validatorName = '';
+
+  // Define validation items
+  const VAL_SECTIONS = [
+    {
+      id: 'nombre',
+      title: 'Nombre del Programa',
+      items: [
+        { id: 'nombre-1', label: 'El nombre "Licenciatura en Diseño Visual y Negocios Creativos" comunica con claridad el alcance del programa.' },
+        { id: 'nombre-2', label: 'El nombre diferencia al programa de ofertas existentes como "Diseño Gráfico" o "Comunicación Visual".' },
+        { id: 'nombre-3', label: 'El nombre es atractivo y comprensible para aspirantes y empleadores.' },
+      ]
+    },
+    {
+      id: 'objetivo',
+      title: 'Objetivo del Programa',
+      items: [
+        { id: 'obj-1', label: 'El objetivo refleja las necesidades actuales del campo profesional del diseño.' },
+        { id: 'obj-2', label: 'La integración de visión estratégica y pensamiento sistémico es pertinente para el perfil del egresado.' },
+        { id: 'obj-3', label: 'El objetivo es alcanzable dentro de la estructura curricular propuesta (9 semestres).' },
+      ]
+    },
+    {
+      id: 'perfil-egreso',
+      title: 'Perfil de Egreso',
+      items: [
+        { id: 'pe-1', label: 'El perfil describe con precisión las capacidades que debe tener un egresado del programa.' },
+        { id: 'pe-2', label: 'Las competencias descritas son relevantes para el mercado laboral actual.' },
+        { id: 'pe-3', label: 'El perfil es coherente con el objetivo del programa.' },
+      ]
+    },
+    {
+      id: 'perfil-ingreso',
+      title: 'Perfil de Ingreso',
+      items: [
+        { id: 'pi-1', label: 'El perfil de ingreso establece requisitos realistas para los aspirantes.' },
+        { id: 'pi-2', label: 'Las habilidades solicitadas son identificables en egresados de preparatoria.' },
+      ]
+    },
+    {
+      id: 'estructura',
+      title: 'Estructura Curricular General',
+      items: [
+        { id: 'est-1', label: 'La duración de 9 semestres es adecuada para la formación propuesta.' },
+        { id: 'est-2', label: 'La distribución de créditos por semestre es equilibrada.' },
+        { id: 'est-3', label: 'La progresión por fases (Fundamentos → Sistemas → Experiencia → Dirección → Proyecto) es lógica.' },
+        { id: 'est-4', label: 'El modelo de 2 concentraciones profesionales aporta valor diferencial.' },
+      ]
+    },
+    {
+      id: 'competencias',
+      title: 'Competencias del Perfil de Egreso',
+      items: [
+        { id: 'comp-1', label: 'Las 8 competencias cubren adecuadamente el perfil profesional del diseñador visual.' },
+        { id: 'comp-2', label: 'La progresión Introduce → Desarrolla → Domina es apropiada para cada competencia.' },
+        { id: 'comp-3', label: 'Las competencias son evaluables y medibles.' },
+      ]
+    },
+  ];
+
+  // Add materias section dynamically from the malla
+  function buildMateriaSections() {
+    const sections = [];
+    document.querySelectorAll('.semester-col').forEach((col, i) => {
+      const cards = [...col.querySelectorAll('.course-card:not(.conc-slot-empty)')];
+      if (!cards.length) return;
+      const items = cards.map((card, j) => {
+        const name = card.querySelector('.card-name')?.textContent?.trim() || '';
+        const type = card.querySelector('.card-type')?.textContent?.trim() || '';
+        if (name === 'Formación UDEM' || name === 'Conocimiento General') return null;
+        return {
+          id: 'mat-s' + (i+1) + '-' + j,
+          label: name + ' — es pertinente en el semestre ' + (i+1) + ' y su contenido contribuye al perfil de egreso.'
+        };
+      }).filter(Boolean);
+      if (items.length) {
+        sections.push({
+          id: 'sem-' + (i+1),
+          title: 'Semestre ' + (i+1) + ' — Materias',
+          items
+        });
+      }
+    });
+    return sections;
+  }
+
+  function renderInstrument() {
+    const allSections = [...VAL_SECTIONS, ...buildMateriaSections()];
+    const container = document.getElementById('valSections');
+    let totalItems = 0;
+
+    container.innerHTML = allSections.map(sec => {
+      totalItems += sec.items.length;
+      return '<div class="val-section" data-sec="' + sec.id + '">' +
+        '<div class="val-section-head" onclick="this.parentElement.classList.toggle(\'open\')">' +
+          '<span class="val-section-title">' + sec.title + '</span>' +
+          '<span class="val-section-badge">' + sec.items.length + ' ítems</span>' +
+        '</div>' +
+        '<div class="val-section-body">' +
+          sec.items.map(item =>
+            '<div class="val-item" data-item="' + item.id + '">' +
+              '<div class="val-item-label">' + item.label + '</div>' +
+              '<div class="val-likert">' +
+                [1,2,3,4,5].map(n =>
+                  '<button class="val-likert-btn" data-val="' + n + '" onclick="selectLikert(this)">' + n + '</button>'
+                ).join('') +
+              '</div>' +
+              '<textarea class="val-comment" placeholder="Comentario (opcional)..." rows="1"></textarea>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    document.getElementById('valProgress').textContent = '0 / ' + totalItems;
+    // Open first section
+    container.querySelector('.val-section')?.classList.add('open');
+  }
+
+  // Make selectLikert global
+  window.selectLikert = function(btn) {
+    const siblings = btn.parentElement.querySelectorAll('.val-likert-btn');
+    siblings.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateProgress();
+  };
+
+  function updateProgress() {
+    const answered = document.querySelectorAll('#valSections .val-likert-btn.selected').length;
+    // Count unique items answered
+    const items = new Set();
+    document.querySelectorAll('#valSections .val-likert-btn.selected').forEach(btn => {
+      items.add(btn.closest('.val-item').dataset.item);
+    });
+    const total = document.querySelectorAll('#valSections .val-item').length;
+    document.getElementById('valProgress').textContent = items.size + ' / ' + total;
+  }
+
+  // Login
+  document.getElementById('valStart')?.addEventListener('click', () => {
+    const name = document.getElementById('valName').value.trim();
+    if (!name) { document.getElementById('valName').style.borderColor = '#f44'; return; }
+    validatorName = name;
+    document.getElementById('valLogin').style.display = 'none';
+    document.getElementById('valInstrument').style.display = 'block';
+    document.getElementById('valWho').textContent = name;
+    renderInstrument();
+  });
+
+  document.getElementById('valName')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('valStart').click();
+  });
+
+  // Submit
+  document.getElementById('valSubmit')?.addEventListener('click', async () => {
+    const responses = {};
+    document.querySelectorAll('#valSections .val-item').forEach(item => {
+      const id = item.dataset.item;
+      const selected = item.querySelector('.val-likert-btn.selected');
+      const comment = item.querySelector('.val-comment').value.trim();
+      if (selected || comment) {
+        responses[id] = {
+          score: selected ? parseInt(selected.dataset.val) : null,
+          comment: comment || null
+        };
+      }
+    });
+
+    const answeredCount = Object.values(responses).filter(r => r.score !== null).length;
+    const totalCount = document.querySelectorAll('#valSections .val-item').length;
+
+    if (answeredCount < totalCount * 0.5) {
+      if (!confirm('Has respondido ' + answeredCount + ' de ' + totalCount + ' ítems. ¿Deseas enviar la validación parcial?')) return;
+    }
+
+    const data = {
+      name: validatorName,
+      timestamp: new Date().toISOString(),
+      responses
+    };
+
+    try {
+      const validations = (await dbGet('validations')) || {};
+      const key = validatorName.toLowerCase().replace(/\s+/g, '-');
+      validations[key] = data;
+      await dbSet('validations', validations);
+      alert('¡Validación enviada correctamente! Gracias, ' + validatorName + '.');
+      document.getElementById('valSubmit').textContent = '✓ Enviada';
+      document.getElementById('valSubmit').disabled = true;
+      document.getElementById('valSubmit').style.opacity = '0.5';
+    } catch(e) {
+      alert('Error al enviar: ' + e.message);
+    }
+  });
+
+  // Dashboard (admin only)
+  async function renderDashboard() {
+    if (userRole !== 'admin') return;
+    const dash = document.getElementById('valDashboard');
+    if (!dash) return;
+    dash.style.display = 'block';
+
+    const validations = (await dbGet('validations')) || {};
+    const validators = Object.values(validations);
+    if (!validators.length) {
+      document.getElementById('valDashContent').innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;">Aún no hay validaciones registradas.</p>';
+      return;
+    }
+
+    // Aggregate scores
+    const allItems = {};
+    validators.forEach(v => {
+      Object.entries(v.responses || {}).forEach(([id, resp]) => {
+        if (!allItems[id]) allItems[id] = { scores: [], comments: [] };
+        if (resp.score !== null) allItems[id].scores.push({ name: v.name, score: resp.score });
+        if (resp.comment) allItems[id].comments.push({ name: v.name, text: resp.comment });
+      });
+    });
+
+    // Build dashboard
+    const allSections = [...VAL_SECTIONS, ...buildMateriaSections()];
+    let html = '<div style="margin-bottom:16px;padding:12px 16px;background:var(--surface-2);border-radius:10px;">' +
+      '<span style="font-size:0.85rem;color:var(--text);">' + validators.length + ' validaciones recibidas: </span>' +
+      '<span style="font-size:0.85rem;color:var(--accent);">' + validators.map(v => v.name).join(', ') + '</span></div>';
+
+    allSections.forEach(sec => {
+      html += '<div class="val-section open" style="margin-bottom:16px;">' +
+        '<div class="val-section-head" onclick="this.parentElement.classList.toggle(\'open\')">' +
+          '<span class="val-section-title">' + sec.title + '</span>' +
+        '</div><div class="val-section-body">';
+
+      sec.items.forEach(item => {
+        const data = allItems[item.id] || { scores: [], comments: [] };
+        const avg = data.scores.length ? (data.scores.reduce((s, x) => s + x.score, 0) / data.scores.length) : 0;
+        const pct = (avg / 5) * 100;
+        const color = avg >= 4 ? '#4caf50' : avg >= 3 ? '#ffc107' : avg >= 2 ? '#ff9800' : '#f44336';
+
+        html += '<div class="val-dash-item">' +
+          '<div class="val-dash-label">' + item.label + '</div>' +
+          '<div class="val-dash-bar-wrap">' +
+            '<div class="val-dash-bar"><div class="val-dash-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
+            '<div class="val-dash-score" style="color:' + color + ';">' + (avg ? avg.toFixed(1) : '—') + '</div>' +
+            '<div style="font-size:0.65rem;color:var(--text-tertiary);">(' + data.scores.length + ')</div>' +
+          '</div>';
+
+        if (data.comments.length) {
+          html += '<div class="val-dash-comments">' +
+            data.comments.map(c => '<div class="val-dash-comment"><strong>' + c.name + ':</strong> ' + c.text + '</div>').join('') +
+          '</div>';
+        }
+        html += '</div>';
+      });
+
+      html += '</div></div>';
+    });
+
+    document.getElementById('valDashContent').innerHTML = html;
+  }
+
+  // Render dashboard when switching to validation tab (admin)
+  const origTabHandler = document.querySelectorAll('.nav-tab');
+  origTabHandler.forEach(tab => {
+    tab.addEventListener('click', () => {
+      if (tab.dataset.view === 'validacion' && userRole === 'admin') {
+        setTimeout(renderDashboard, 100);
+      }
+    });
+  });
+})();
 </script>
 </body>
 </html>
