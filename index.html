@@ -803,29 +803,29 @@ body {
 }
 .val-section-head:hover { background:var(--surface-3); }
 .val-section-title {
-  font-family:'Raleway',sans-serif; font-size:0.9rem; font-weight:700; color:var(--text);
+  font-family:'Raleway',sans-serif; font-size:1.1rem; font-weight:700; color:var(--text);
 }
 .val-section-badge {
-  font-size:0.65rem; font-weight:600; color:var(--text-tertiary);
-  background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px;
+  font-size:0.8rem; font-weight:600; color:var(--text-tertiary);
+  background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:4px;
 }
-.val-section-body { display:none; padding:16px 18px; }
+.val-section-body { display:none; padding:20px 22px; }
 .val-section.open .val-section-body { display:block; }
 .val-section.open .val-section-head { border-bottom:1px solid var(--border); }
 
 .val-item {
-  padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  padding:16px 0; border-bottom:1px solid rgba(255,255,255,0.04);
 }
 .val-item:last-child { border-bottom:none; }
 .val-item-label {
-  font-size:0.85rem; color:var(--text); line-height:1.4; margin-bottom:10px;
+  font-size:1.05rem; color:var(--text); line-height:1.5; margin-bottom:12px;
 }
 .val-likert {
-  display:flex; gap:6px; margin-bottom:8px;
+  display:flex; gap:8px; margin-bottom:10px;
 }
 .val-likert-btn {
-  width:40px; height:36px; border-radius:8px; border:1px solid var(--border);
-  background:transparent; color:var(--text-secondary); font-size:0.8rem; font-weight:600;
+  width:48px; height:42px; border-radius:8px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary); font-size:1rem; font-weight:600;
   cursor:pointer; transition:all 0.2s; font-family:'JetBrains Mono',monospace;
 }
 .val-likert-btn:hover { border-color:var(--accent); color:var(--accent); }
@@ -833,9 +833,9 @@ body {
   background:var(--accent); color:#000; border-color:var(--accent);
 }
 .val-comment {
-  width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border);
-  background:var(--surface-2); color:var(--text); font-size:0.78rem; resize:vertical;
-  min-height:32px; font-family:'DM Sans',sans-serif;
+  width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font-size:0.95rem; resize:vertical;
+  min-height:38px; font-family:'DM Sans',sans-serif;
 }
 .val-comment::placeholder { color:var(--text-tertiary); }
 
@@ -1988,23 +1988,23 @@ body.role-admin #modalBadge { display:none; }
     <div id="valInstrument" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
         <div>
-          <h2 style="font-family:'Raleway',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:4px;">Validación del Plan LDV 2027</h2>
-          <p style="font-size:0.8rem;color:var(--text-secondary);">Evaluando como: <strong id="valWho" style="color:var(--accent);"></strong></p>
+          <h2 style="font-family:'Raleway',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:6px;">Validación del Plan LDV 2027</h2>
+          <p style="font-size:1rem;color:var(--text-secondary);">Evaluando como: <strong id="valWho" style="color:var(--accent);"></strong></p>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <div style="font-size:0.75rem;color:var(--text-tertiary);" id="valProgress">0 / 0</div>
-          <button id="valSubmit" style="padding:10px 20px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Enviar validación</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="font-size:0.9rem;color:var(--text-tertiary);" id="valProgress">0 / 0</div>
+          <button id="valSubmit" style="padding:12px 24px;border-radius:10px;background:var(--accent);color:#000;font-weight:700;font-size:0.95rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Enviar validación</button>
         </div>
       </div>
 
       <!-- Scale legend -->
-      <div style="display:flex;gap:16px;padding:12px 16px;background:var(--surface-2);border-radius:10px;margin-bottom:20px;flex-wrap:wrap;">
-        <span style="font-size:0.75rem;color:var(--text-tertiary);font-weight:600;">ESCALA:</span>
-        <span style="font-size:0.75rem;color:var(--text-secondary);">1 = Totalmente en desacuerdo</span>
-        <span style="font-size:0.75rem;color:var(--text-secondary);">2 = En desacuerdo</span>
-        <span style="font-size:0.75rem;color:var(--text-secondary);">3 = Neutral</span>
-        <span style="font-size:0.75rem;color:var(--text-secondary);">4 = De acuerdo</span>
-        <span style="font-size:0.75rem;color:var(--text-secondary);">5 = Totalmente de acuerdo</span>
+      <div style="display:flex;gap:18px;padding:14px 18px;background:var(--surface-2);border-radius:10px;margin-bottom:24px;flex-wrap:wrap;">
+        <span style="font-size:0.9rem;color:var(--text-tertiary);font-weight:600;">ESCALA:</span>
+        <span style="font-size:0.9rem;color:var(--text-secondary);">1 = Totalmente en desacuerdo</span>
+        <span style="font-size:0.9rem;color:var(--text-secondary);">2 = En desacuerdo</span>
+        <span style="font-size:0.9rem;color:var(--text-secondary);">3 = Neutral</span>
+        <span style="font-size:0.9rem;color:var(--text-secondary);">4 = De acuerdo</span>
+        <span style="font-size:0.9rem;color:var(--text-secondary);">5 = Totalmente de acuerdo</span>
       </div>
 
       <div id="valSections"></div>
