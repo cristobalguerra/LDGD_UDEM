@@ -3050,6 +3050,42 @@ const COURSE_DATA = {
     temas:['Implementación y producción del proyecto','Refinamiento y control de calidad','Documentación final','Preparación de presentación','Defensa ante comité evaluador'],
     act:['Implementación completa del proyecto terminal','Exposición pública del proyecto','Defensa ante comité evaluador']
   },
+  // ═══ CONCENTRACIONES (slugs actualizados) ═══
+  'dir-de-arte-y-fotografía-de-producto':{
+    desc:'En Fotografía para Diseño aprendiste a operar la cámara. Ahora dirigirás la sesión completa. ¿Cómo se conceptualiza una imagen que vende? ¿Cómo diriges iluminación, escenografía y postproducción para que el producto cuente la historia que la marca necesita? En esta Concentración trabajarás con fotografía de producto, still life y catálogos comerciales con estándar profesional. Aquí dejas de ser el diseñador que "también toma fotos" y te conviertes en director de arte visual.',
+    obj:'Dirigir sesiones fotográficas de producto con criterio estético y comercial para comunicación de marca.',
+    esp:['Conceptualizar y planificar dirección de arte fotográfica','Controlar iluminación y composición para producto','Postproducir imágenes con estándar comercial'],
+    temas:['Dirección de arte para fotografía','Fotografía de producto y still life','Iluminación de estudio avanzada','Postproducción y retoque profesional','Producción de catálogo visual'],
+    act:['Sesión fotográfica dirigida de producto','Producción de catálogo visual de marca','Portfolio de dirección de arte']
+  },
+  'gestión-de-proyectos-creativos':{
+    desc:'¿Cómo se lleva un proyecto de diseño desde la idea hasta la entrega sin que se desborde en tiempo, presupuesto o alcance? En esta Concentración aprenderás metodologías de gestión — agile, waterfall, híbridas — aplicadas específicamente a proyectos creativos. Coordinarás equipos, definirás alcances, gestionarás stakeholders y evaluarás resultados. No se trata de convertirte en project manager: se trata de que como diseñador puedas dirigir tus propios proyectos con la misma rigurosidad con la que los diseñas.',
+    obj:'Planificar, coordinar e implementar proyectos de diseño aplicando metodologías de gestión.',
+    esp:['Aplicar metodologías de gestión de proyectos creativos','Coordinar equipos y recursos en proyectos de diseño','Evaluar resultados y documentar aprendizajes'],
+    temas:['Metodologías de gestión: agile, waterfall, hybrid','Planificación y cronogramas','Gestión de equipos creativos','Presupuestos y alcance','Evaluación y métricas de proyecto'],
+    act:['Plan de gestión para proyecto real de diseño','Simulación de gestión de proyecto en equipo','Caso de estudio: análisis de proyecto profesional']
+  },
+  'dirección-visual-de-marca':{
+    desc:'¿Cómo se mantiene una marca coherente cuando vive en 20 plataformas diferentes y la ejecutan 10 personas distintas? En esta Concentración irás más allá del diseño de marca: aprenderás a dirigir su implementación visual a escala. Trabajarás con sistemas de diseño, guías de estilo extendidas, dirección de arte para campañas y gestión de consistencia visual en ecosistemas complejos. Es el paso de diseñador de marca a director visual de marca — la persona que define cómo se ve todo.',
+    obj:'Dirigir la implementación visual de marca a escala, gestionando consistencia y coherencia en ecosistemas complejos.',
+    esp:['Desarrollar sistemas de diseño y guías de estilo extendidas','Dirigir arte visual para campañas y touchpoints múltiples','Gestionar consistencia de marca en equipos y plataformas'],
+    temas:['Sistemas de diseño para marcas','Dirección de arte para campañas','Guías de estilo extendidas','Gestión de consistencia visual','Brand governance y evolución de marca'],
+    act:['Desarrollo de sistema de diseño completo para marca','Dirección de arte para campaña multiplataforma','Guía de implementación visual para equipo']
+  },
+  'consultoría-y-estrategia-de-diseño':{
+    desc:'¿Cómo convences a un directivo de que el diseño no es un gasto sino una inversión? En esta Concentración aprenderás a vincular diseño con estrategia organizacional: design thinking avanzado, lean startup, métricas de impacto y transformación por diseño. Trabajarás con organizaciones reales proponiendo soluciones de innovación fundamentadas. Aquí el diseñador deja de esperar instrucciones y empieza a definir la dirección. Es la preparación directa para el rol de consultor o estratega de diseño.',
+    obj:'Vincular diseño con estrategia organizacional e innovación para generar soluciones viables y medibles.',
+    esp:['Aplicar frameworks de design thinking y lean startup','Conectar diseño con objetivos de negocio y métricas','Desarrollar propuestas de innovación fundamentadas'],
+    temas:['Design thinking avanzado','Lean startup y validación','Estrategia de innovación','Diseño y transformación organizacional','Métricas de impacto'],
+    act:['Proyecto de innovación para organización real','Validación de propuesta con metodología lean','Pitch de solución con modelo de negocio']
+  },
+  'emprendimiento-creativo':{
+    desc:'¿Y si en lugar de buscar empleo, creas el tuyo? En esta Concentración diseñarás y validarás tu propio emprendimiento creativo. Aprenderás lean startup aplicado a diseño: cómo identificar oportunidades, crear un MVP, validar con usuarios reales y desarrollar una estrategia de lanzamiento. Trabajarás en tu marca personal, explorarás modelos de monetización para servicios de diseño y te conectarás con el ecosistema emprendedor. El proyecto final es un pitch real ante un panel. Algunos de los mejores estudios de diseño nacieron así.',
+    obj:'Diseñar y validar emprendimientos creativos aplicando lean startup y estrategias de monetización.',
+    esp:['Identificar oportunidades de emprendimiento en diseño','Validar ideas con metodología lean y MVP','Desarrollar estrategia de lanzamiento y pitch'],
+    temas:['Lean startup para creativos','Validación de ideas y MVP','Monetización de servicios de diseño','Marca personal y posicionamiento','Ecosistema emprendedor y financiamiento'],
+    act:['Desarrollo de MVP para emprendimiento creativo','Validación con usuarios reales','Plan de lanzamiento y pitch final']
+  },
 };
 // Backward compat
 const COURSE_OBJECTIVES = {};
@@ -3082,7 +3118,9 @@ const SUGGESTED_COMPS = {
   'emprendimiento-con-propósito':{C8:'I'},
   // SEM 4 CONCENTRACIONES (opcionales)
   'dir-de-arte-y-fotografía':{C1:'D',C5:'D'},
+  'dir-de-arte-y-fotografía-de-producto':{C1:'D',C5:'D'},
   'gestión-de-proyectos-de-diseño':{C4:'I',C8:'I'},
+  'gestión-de-proyectos-creativos':{C4:'I',C8:'I'},
   // ═══ SEM 5 — DEVELOP → MASTER ═══
   'identidad-de-marca-ii-implementación':{C1:'M',C2:'D',C7:'D'},
   'portafolio-profesional':{C1:'D',C8:'D'},
@@ -3090,6 +3128,7 @@ const SUGGESTED_COMPS = {
   'pensamiento-de-futuros-sociales':{C6:'D',C8:'D'},
   // SEM 5 CONCENTRACIÓN (opcional)
   'toma-de-decisiones-en-procesos-de-diseño':{C4:'D',C6:'D',C8:'D'},
+  'dirección-visual-de-marca':{C1:'D',C2:'D',C4:'D'},
   // ═══ SEM 6 — DEVELOP → MASTER ═══
   'estudio-de-interacción':{C3:'D',C5:'D',C7:'D'},
   'diseño-de-experiencia':{C3:'D',C6:'D'},
@@ -3104,12 +3143,14 @@ const SUGGESTED_COMPS = {
   'innovación-en-diseño':{C4:'D',C6:'M',C7:'M'},
   // SEM 7 CONCENTRACIÓN (opcional)
   'diseño-estratégico-e-innovación':{C4:'D',C7:'D',C8:'D'},
+  'consultoría-y-estrategia-de-diseño':{C4:'D',C7:'D',C8:'D'},
   // ═══ SEM 8 — MASTER ═══
   'estudio-integral-de-diseño':{C1:'M',C2:'M',C3:'M',C4:'M',C7:'M'},
   'proyecto-de-evaluación-final-i':{C4:'M',C6:'M',C8:'M'},
   'negocios-pendiente':{C4:'M',C8:'M'},
   // SEM 8 CONCENTRACIÓN (opcional)
   'emprendimiento-en-diseño':{C8:'D',C4:'D'},
+  'emprendimiento-creativo':{C8:'D',C4:'D'},
   // ═══ SEM 9 — MASTER ═══
   'proyecto-de-evaluación-final-ii':{C1:'M',C4:'M',C6:'M',C7:'M',C8:'M'},
 };
