@@ -1192,6 +1192,70 @@ body.role-admin #modalBadge { display:none; }
   transition:all 0.2s;
 }
 .biblio-remove:hover { background:rgba(232,126,126,0.1); color:var(--produccion); border-color:var(--produccion); }
+/* Gestión de cambios */
+.gestion-filter {
+  padding:5px 14px; border-radius:20px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary);
+  font:inherit; font-size:0.72rem; font-weight:600; cursor:pointer;
+  transition:all 0.2s;
+}
+.gestion-filter.active { background:var(--accent); color:#000; border-color:var(--accent); }
+.gestion-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:20px; margin-bottom:12px; transition:all 0.2s;
+}
+.gestion-card.status-approved { border-left:3px solid #4ade80; }
+.gestion-card.status-rejected { border-left:3px solid #f87171; }
+.gestion-card.status-pending { border-left:3px solid var(--accent); }
+.gestion-card .gc-header {
+  display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:12px;
+}
+.gestion-card .gc-component {
+  font-family:'Raleway',sans-serif; font-size:0.95rem; font-weight:700; color:var(--text);
+}
+.gestion-card .gc-rating {
+  font-size:0.7rem; padding:2px 10px; border-radius:12px; font-weight:600; flex-shrink:0;
+}
+.gestion-card .gc-rating.red { background:rgba(248,113,113,0.15); color:#f87171; }
+.gestion-card .gc-rating.yellow { background:rgba(250,204,21,0.15); color:#facc15; }
+.gestion-card .gc-validator {
+  font-size:0.75rem; color:var(--text-tertiary); margin-bottom:8px;
+}
+.gestion-card .gc-comment {
+  font-size:0.88rem; color:var(--text-secondary); line-height:1.6;
+  padding:12px 16px; background:var(--surface-2); border-radius:8px;
+  border-left:2px solid var(--border); margin-bottom:14px;
+}
+.gestion-card .gc-actions {
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+}
+.gestion-card .gc-btn {
+  padding:6px 16px; border-radius:8px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary);
+  font:inherit; font-size:0.75rem; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.gestion-card .gc-btn:hover { border-color:var(--text-secondary); }
+.gestion-card .gc-btn.approve { background:rgba(74,222,128,0.1); color:#4ade80; border-color:rgba(74,222,128,0.3); }
+.gestion-card .gc-btn.approve:hover { background:rgba(74,222,128,0.2); }
+.gestion-card .gc-btn.reject { background:rgba(248,113,113,0.1); color:#f87171; border-color:rgba(248,113,113,0.3); }
+.gestion-card .gc-btn.reject:hover { background:rgba(248,113,113,0.2); }
+.gestion-card .gc-resolution {
+  font-size:0.8rem; color:var(--text-secondary); margin-top:12px;
+  padding:10px 14px; background:var(--surface-2); border-radius:8px;
+}
+.gestion-card .gc-resolution strong { color:var(--text); }
+.gc-reason-input {
+  width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font:inherit; font-size:0.82rem;
+  margin-top:8px; resize:vertical; min-height:60px;
+}
+.gc-stat-card {
+  flex:1; min-width:120px; padding:14px 18px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); text-align:center;
+}
+.gc-stat-num { font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:800; color:var(--text); }
+.gc-stat-label { font-size:0.65rem; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.1em; margin-top:2px; }
+
 .biblio-add {
   padding:6px 14px; border-radius:8px; border:1px dashed var(--border);
   background:transparent; color:var(--text-tertiary);
@@ -1433,6 +1497,7 @@ body.role-admin #modalBadge { display:none; }
         <button class="nav-tab" data-view="certificados">Concentraciones</button>
         <button class="nav-tab" data-view="investigacion">Investigación</button>
         <button class="nav-tab" data-view="validacion">Validación</button>
+        <button class="nav-tab admin-only-tab" data-view="gestion" style="display:none;">Gestión</button>
       </div>
       <button class="btn-header" id="btnDownloadMap" title="Descargar mapa curricular PDF">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -2131,6 +2196,35 @@ body.role-admin #modalBadge { display:none; }
   </div>
 </div>
 
+<!-- ===== GESTIÓN DE CAMBIOS VIEW (admin only) ===== -->
+<div class="view" id="view-gestion">
+  <div class="programa-content" style="max-width:1000px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:8px;">Gestión de Cambios Curriculares</div>
+      <h2 style="font-family:'Raleway',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text);">Repositorio de Sugerencias</h2>
+      <p style="font-size:0.9rem;color:var(--text-secondary);margin-top:8px;">Revisa, aprueba o descarta las observaciones de los evaluadores.</p>
+    </div>
+
+    <!-- Stats -->
+    <div id="gestionStats" style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;"></div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="gestion-filter active" data-filter="all">Todas</button>
+      <button class="gestion-filter" data-filter="pending">Pendientes</button>
+      <button class="gestion-filter" data-filter="approved">Aprobadas</button>
+      <button class="gestion-filter" data-filter="rejected">Descartadas</button>
+      <button class="gestion-filter" data-filter="red">Solo 🔴</button>
+      <button class="gestion-filter" data-filter="yellow">Solo 🟡</button>
+      <div style="flex:1;"></div>
+      <button id="btnDownloadMinuta" style="padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-secondary);font:inherit;font-size:0.75rem;cursor:pointer;">Descargar Minuta</button>
+    </div>
+
+    <!-- Suggestions list -->
+    <div id="gestionList"></div>
+  </div>
+</div>
+
 <script>
 // ===== USER ROLE =====
 let userRole = null; // 'admin' | 'viewer'
@@ -2157,6 +2251,10 @@ function enterApp(role) {
 }
 
 function applyRole() {
+  // Show/hide admin-only tabs
+  document.querySelectorAll('.admin-only-tab').forEach(t => {
+    t.style.display = userRole === 'admin' ? '' : 'none';
+  });
   if (userRole === 'viewer') {
     // Disable drag & drop
     document.querySelectorAll('#semGrid .course-card').forEach(card => {
@@ -4288,7 +4386,238 @@ async function initApp() {
       if (tab.dataset.view === 'validacion' && userRole === 'admin') {
         setTimeout(renderDashboard, 100);
       }
+      if (tab.dataset.view === 'gestion' && userRole === 'admin') {
+        setTimeout(renderGestion, 100);
+      }
     });
+  });
+})();
+
+// ===== GESTIÓN DE CAMBIOS =====
+(function() {
+  let changeLog = {};
+  let currentFilter = 'all';
+
+  // Map item IDs to human-readable labels
+  function getItemLabel(id) {
+    // Parse ID to find component
+    if (id.startsWith('nombre-')) return { label: ['Nombre del programa','Refleja la oferta académica','Atractivo para aspirantes'][parseInt(id.split('-')[1])-1] || id, section: 'Nombre del Programa' };
+    if (id.startsWith('obj-')) return { label: ['Objetivo claro','Pensamiento sistémico y estratégico','Alcanzable con la malla'][parseInt(id.split('-')[1])-1] || id, section: 'Objetivo' };
+    if (id.startsWith('pe-')) return { label: ['Perfil de egreso coherente','Competencias relevantes','Diferenciado'][parseInt(id.split('-')[1])-1] || id, section: 'Perfil de Egreso' };
+    if (id.startsWith('pi-')) return { label: ['Perfil de ingreso','Habilidades requeridas'][parseInt(id.split('-')[1])-1] || id, section: 'Perfil de Ingreso' };
+    if (id.startsWith('comp-')) return { label: 'Competencia ' + id.split('-')[1], section: 'Competencias' };
+    if (id.startsWith('mat-')) {
+      // Get course name from the malla
+      const parts = id.match(/mat-s(\d+)-(\d+)/);
+      if (parts) {
+        const semIdx = parseInt(parts[1]) - 1;
+        const cardIdx = parseInt(parts[2]);
+        const col = document.querySelectorAll('.semester-col')[semIdx];
+        if (col) {
+          const cards = col.querySelectorAll('.course-card');
+          const card = cards[cardIdx];
+          if (card) return { label: card.querySelector('.card-name')?.textContent || id, section: 'Sem ' + parts[1] + ' · Materias' };
+        }
+      }
+      return { label: id, section: 'Materias' };
+    }
+    return { label: id, section: 'Otro' };
+  }
+
+  window.renderGestion = async function() {
+    if (userRole !== 'admin') return;
+    const validations = (await dbGet('validations')) || {};
+    changeLog = (await dbGet('changeLog')) || {};
+    const validators = Object.values(validations);
+
+    // Collect all suggestions (non-green with comments)
+    const suggestions = [];
+    validators.forEach(v => {
+      Object.entries(v.responses || {}).forEach(([id, resp]) => {
+        if (resp.rating !== 'green' && resp.comment) {
+          suggestions.push({
+            id, validator: v.name, rating: resp.rating,
+            comment: resp.comment, timestamp: v.timestamp,
+            status: changeLog[v.name + '|' + id]?.status || 'pending',
+            resolution: changeLog[v.name + '|' + id]?.resolution || '',
+            resolvedDate: changeLog[v.name + '|' + id]?.resolvedDate || ''
+          });
+        }
+      });
+    });
+
+    // Stats
+    const pending = suggestions.filter(s => s.status === 'pending').length;
+    const approved = suggestions.filter(s => s.status === 'approved').length;
+    const rejected = suggestions.filter(s => s.status === 'rejected').length;
+    const reds = suggestions.filter(s => s.rating === 'red').length;
+
+    document.getElementById('gestionStats').innerHTML =
+      '<div class="gc-stat-card"><div class="gc-stat-num">' + suggestions.length + '</div><div class="gc-stat-label">Total</div></div>' +
+      '<div class="gc-stat-card"><div class="gc-stat-num" style="color:var(--accent)">' + pending + '</div><div class="gc-stat-label">Pendientes</div></div>' +
+      '<div class="gc-stat-card"><div class="gc-stat-num" style="color:#4ade80">' + approved + '</div><div class="gc-stat-label">Aprobadas</div></div>' +
+      '<div class="gc-stat-card"><div class="gc-stat-num" style="color:#f87171">' + rejected + '</div><div class="gc-stat-label">Descartadas</div></div>' +
+      '<div class="gc-stat-card"><div class="gc-stat-num" style="color:#f87171">' + reds + '</div><div class="gc-stat-label">Rojos 🔴</div></div>' +
+      '<div class="gc-stat-card"><div class="gc-stat-num">' + validators.length + '</div><div class="gc-stat-label">Evaluadores</div></div>';
+
+    // Filter
+    let filtered = suggestions;
+    if (currentFilter === 'pending') filtered = suggestions.filter(s => s.status === 'pending');
+    else if (currentFilter === 'approved') filtered = suggestions.filter(s => s.status === 'approved');
+    else if (currentFilter === 'rejected') filtered = suggestions.filter(s => s.status === 'rejected');
+    else if (currentFilter === 'red') filtered = suggestions.filter(s => s.rating === 'red');
+    else if (currentFilter === 'yellow') filtered = suggestions.filter(s => s.rating === 'yellow');
+
+    // Sort: reds first, then pending, then by section
+    filtered.sort((a, b) => {
+      if (a.rating === 'red' && b.rating !== 'red') return -1;
+      if (b.rating === 'red' && a.rating !== 'red') return 1;
+      if (a.status === 'pending' && b.status !== 'pending') return -1;
+      if (b.status === 'pending' && a.status !== 'pending') return 1;
+      return 0;
+    });
+
+    // Render list
+    const list = document.getElementById('gestionList');
+    if (!filtered.length) {
+      list.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:40px;">No hay sugerencias con este filtro.</p>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(s => {
+      const info = getItemLabel(s.id);
+      const key = s.validator + '|' + s.id;
+      const ratingEmoji = s.rating === 'red' ? '🔴' : '🟡';
+      const ratingLabel = s.rating === 'red' ? 'Reconsiderar' : 'Ajustar';
+
+      let actionsHtml = '';
+      if (s.status === 'pending') {
+        actionsHtml = `
+          <button class="gc-btn approve" onclick="gestionResolve('${key}','approved')">✓ Aprobar</button>
+          <button class="gc-btn reject" onclick="gestionResolve('${key}','rejected')">✗ Descartar</button>
+          <textarea class="gc-reason-input" id="reason-${key.replace(/[^a-z0-9]/gi,'_')}" placeholder="Resolución o motivo (opcional)..."></textarea>
+        `;
+      } else {
+        const statusLabel = s.status === 'approved' ? '✓ Aprobada' : '✗ Descartada';
+        const statusColor = s.status === 'approved' ? '#4ade80' : '#f87171';
+        actionsHtml = `
+          <div class="gc-resolution">
+            <strong style="color:${statusColor}">${statusLabel}</strong>
+            ${s.resolvedDate ? ' · ' + new Date(s.resolvedDate).toLocaleDateString('es-MX') : ''}
+            ${s.resolution ? '<br>' + s.resolution : ''}
+          </div>
+          <button class="gc-btn" onclick="gestionResolve('${key}','pending')" style="margin-top:8px;font-size:0.68rem;">↩ Revertir a pendiente</button>
+        `;
+      }
+
+      return `
+        <div class="gestion-card status-${s.status}" data-status="${s.status}" data-rating="${s.rating}">
+          <div class="gc-header">
+            <div>
+              <div class="gc-component">${info.label}</div>
+              <div class="gc-validator">${ratingEmoji} ${ratingLabel} · ${s.validator} · ${info.section}</div>
+            </div>
+            <span class="gc-rating ${s.rating}">${ratingLabel}</span>
+          </div>
+          <div class="gc-comment">${s.comment.replace(/\n/g, '<br>')}</div>
+          <div class="gc-actions">${actionsHtml}</div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  window.gestionResolve = async function(key, status) {
+    const reasonEl = document.getElementById('reason-' + key.replace(/[^a-z0-9]/gi, '_'));
+    const resolution = reasonEl ? reasonEl.value.trim() : '';
+
+    changeLog[key] = {
+      status,
+      resolution,
+      resolvedDate: status !== 'pending' ? new Date().toISOString() : null
+    };
+    await dbSet('changeLog', changeLog);
+    renderGestion();
+  };
+
+  // Filter buttons
+  document.querySelectorAll('.gestion-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gestion-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderGestion();
+    });
+  });
+
+  // Download minuta
+  document.getElementById('btnDownloadMinuta')?.addEventListener('click', async () => {
+    const validations = (await dbGet('validations')) || {};
+    const cl = (await dbGet('changeLog')) || {};
+    const validators = Object.values(validations);
+    const suggestions = [];
+    validators.forEach(v => {
+      Object.entries(v.responses || {}).forEach(([id, resp]) => {
+        if (resp.rating !== 'green' && resp.comment) {
+          const info = getItemLabel(id);
+          const key = v.name + '|' + id;
+          suggestions.push({
+            componente: info.label, seccion: info.section,
+            evaluador: v.name, tipo: resp.rating === 'red' ? 'Reconsiderar' : 'Ajustar',
+            observacion: resp.comment,
+            estado: cl[key]?.status || 'pendiente',
+            resolucion: cl[key]?.resolution || '',
+            fecha: cl[key]?.resolvedDate ? new Date(cl[key].resolvedDate).toLocaleDateString('es-MX') : ''
+          });
+        }
+      });
+    });
+
+    // Generate text minuta
+    let txt = 'MINUTA DE VALIDACIÓN CURRICULAR\n';
+    txt += 'Licenciatura en Diseño Visual y Negocios Creativos · Plan 2027\n';
+    txt += 'Universidad de Monterrey · CRGS · Escuela de Arte y Diseño\n';
+    txt += 'Fecha de generación: ' + new Date().toLocaleDateString('es-MX') + '\n';
+    txt += '═'.repeat(70) + '\n\n';
+    txt += 'EVALUADORES: ' + validators.map(v => v.name).join(', ') + '\n\n';
+
+    const approved = suggestions.filter(s => s.estado === 'approved');
+    const rejected = suggestions.filter(s => s.estado === 'rejected');
+    const pending = suggestions.filter(s => s.estado === 'pendiente');
+
+    if (approved.length) {
+      txt += '✓ CAMBIOS APROBADOS (' + approved.length + ')\n' + '─'.repeat(40) + '\n';
+      approved.forEach((s, i) => {
+        txt += (i+1) + '. [' + s.seccion + '] ' + s.componente + '\n';
+        txt += '   Evaluador: ' + s.evaluador + ' (' + s.tipo + ')\n';
+        txt += '   Observación: ' + s.observacion.substring(0, 200) + '\n';
+        txt += '   Resolución: ' + (s.resolucion || 'Aprobado sin comentarios') + '\n';
+        txt += '   Fecha: ' + s.fecha + '\n\n';
+      });
+    }
+    if (rejected.length) {
+      txt += '✗ CAMBIOS DESCARTADOS (' + rejected.length + ')\n' + '─'.repeat(40) + '\n';
+      rejected.forEach((s, i) => {
+        txt += (i+1) + '. [' + s.seccion + '] ' + s.componente + '\n';
+        txt += '   Evaluador: ' + s.evaluador + ' (' + s.tipo + ')\n';
+        txt += '   Observación: ' + s.observacion.substring(0, 200) + '\n';
+        txt += '   Motivo de descarte: ' + (s.resolucion || 'Sin comentarios') + '\n';
+        txt += '   Fecha: ' + s.fecha + '\n\n';
+      });
+    }
+    if (pending.length) {
+      txt += '⏳ PENDIENTES (' + pending.length + ')\n' + '─'.repeat(40) + '\n';
+      pending.forEach((s, i) => {
+        txt += (i+1) + '. [' + s.seccion + '] ' + s.componente + '\n';
+        txt += '   Evaluador: ' + s.evaluador + ' (' + s.tipo + ')\n';
+        txt += '   Observación: ' + s.observacion.substring(0, 200) + '\n\n';
+      });
+    }
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Minuta_Validacion_LDV2027_' + new Date().toISOString().split('T')[0] + '.txt';
+    a.click();
   });
 })();
 </script>
