@@ -3187,15 +3187,17 @@ const SUGGESTED_COMPS = {
 // Competency info available in modal only (not on cards)
 
 // ===== TRAYECTO FORMATIVO =====
-// Concentration course slugs (optional — dashed border)
 const CONC_SLUGS = new Set([
-  'dir-de-arte-y-fotografía','gestión-de-proyectos-de-diseño',
-  'toma-de-decisiones-en-procesos-de-diseño','inteligencia-artificial-para-diseño',
-  'diseño-estratégico-e-innovación','emprendimiento-en-diseño'
+  'dir-de-arte-y-fotografía','dir-de-arte-y-fotografía-de-producto',
+  'gestión-de-proyectos-de-diseño','gestión-de-proyectos-creativos',
+  'toma-de-decisiones-en-procesos-de-diseño','dirección-visual-de-marca',
+  'inteligencia-artificial-para-diseño','motion-design-y-contenido-digital',
+  'diseño-estratégico-e-innovación','consultoría-y-estrategia-de-diseño',
+  'emprendimiento-en-diseño','emprendimiento-creativo'
 ]);
 
 async function buildTrayecto() {
-  // Build competencias list
+  // Build SLO list in programa section
   const listEl = document.getElementById('compListPrograma');
   if (listEl) {
     listEl.innerHTML = COMPETENCIAS.map(c =>
@@ -3203,55 +3205,76 @@ async function buildTrayecto() {
     ).join('');
   }
 
-  // Build trayecto table: rows = competencias, cols = semesters 1-9
-  // For each semester, determine the highest level reached per competency
   const semCols = document.querySelectorAll('.semester-col');
-  const semData = []; // [{slug: compMap}, ...]
-  const lvlOrder = {'I':1,'D':2,'M':3};
-
-  // Load saved plans to override suggested comps
+  const lvlOrder = {'B':1,'I':2,'A':3,'E':4};
+  const lvlLabels = {'B':'Básico','I':'Intermedio','A':'Avanzado','E':'Evaluación'};
   const plans = (await dbGet('plans')) || {};
 
-  semCols.forEach((col, semIdx) => {
-    const semComps = {}; // {C1: {lvl, isOpt}, ...}
+  // Collect per-semester, per-SLO: {sloId: [{name, lvl, isOpt}]}
+  const semData = [];
+  const semSloMax = []; // highest level per SLO per semester
+
+  semCols.forEach((col) => {
+    const sloEntries = {}; // {SLO1: [{name,lvl,isOpt}], ...}
+    const sloMax = {};
     col.querySelectorAll('.course-card').forEach(card => {
+      const type = card.dataset.type;
+      if (type === 'formacion' || type === 'general') return;
       const name = card.querySelector('.card-name')?.textContent.trim() || '';
       const slug = name.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
       const courseId = card.dataset.origId || card.dataset.id || '';
-      // Use saved plan comps if available, otherwise suggested
       const savedComps = plans[courseId]?.competencias || plans[slug]?.competencias;
       const comps = savedComps || SUGGESTED_COMPS[slug];
       if (!comps) return;
-      const isOpt = CONC_SLUGS.has(slug);
+      const isOpt = CONC_SLUGS.has(slug) || type === 'certificado';
       for (const [cid, lvl] of Object.entries(comps)) {
-        const cur = semComps[cid];
-        if (!cur || lvlOrder[lvl] > lvlOrder[cur.lvl]) {
-          semComps[cid] = { lvl, isOpt: isOpt && (!cur || cur.isOpt) };
-        }
+        if (!sloEntries[cid]) sloEntries[cid] = [];
+        sloEntries[cid].push({ name, lvl, isOpt });
+        if (!sloMax[cid] || lvlOrder[lvl] > lvlOrder[sloMax[cid]]) sloMax[cid] = lvl;
       }
     });
-    semData.push(semComps);
+    semData.push(sloEntries);
+    semSloMax.push(sloMax);
   });
 
-  // Build HTML table
+  // Build HTML: rows = materias (by semester), cols = SLOs
   const wrap = document.getElementById('trayectoWrap');
   if (!wrap) return;
-  let html = '<table class="trayecto-table"><thead><tr><th class="th-comp">Competencia</th>';
-  for (let s = 1; s <= 9; s++) html += `<th>S${s}</th>`;
+  let html = '<table class="trayecto-table"><thead><tr><th class="th-comp" style="min-width:60px;">Sem</th><th class="th-comp">Materia</th>';
+  COMPETENCIAS.forEach(c => {
+    html += `<th style="font-size:0.6rem;line-height:1.2;max-width:100px;">${c.id}<br><span style="font-weight:400;font-size:0.55rem;">${c.label}</span></th>`;
+  });
   html += '</tr></thead><tbody>';
 
-  COMPETENCIAS.forEach(comp => {
-    html += `<tr><td class="th-comp">${comp.id} — ${comp.label}</td>`;
-    for (let s = 0; s < 9; s++) {
-      const data = semData[s]?.[comp.id];
-      if (data) {
-        const optClass = data.isOpt ? ' lvl-opt' : '';
-        html += `<td class="trayecto-cell lvl-${data.lvl}${optClass}">${data.lvl}</td>`;
-      } else {
-        html += '<td class="trayecto-cell"></td>';
-      }
-    }
-    html += '</tr>';
+  semCols.forEach((col, semIdx) => {
+    const cards = [...col.querySelectorAll('.course-card')];
+    let firstInSem = true;
+    cards.forEach(card => {
+      const type = card.dataset.type;
+      if (type === 'formacion' || type === 'general') return;
+      const name = card.querySelector('.card-name')?.textContent.trim() || '';
+      const slug = name.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+      const courseId = card.dataset.origId || card.dataset.id || '';
+      const savedComps = plans[courseId]?.competencias || plans[slug]?.competencias;
+      const comps = savedComps || SUGGESTED_COMPS[slug];
+      const isOpt = CONC_SLUGS.has(slug) || type === 'certificado';
+      const borderTop = firstInSem ? 'border-top:2px solid var(--border-hover);' : '';
+      firstInSem = false;
+
+      html += `<tr style="${borderTop}">`;
+      html += `<td class="trayecto-cell" style="font-weight:700;font-size:0.75rem;text-align:center;">${semIdx + 1}</td>`;
+      html += `<td class="th-comp" style="font-size:0.75rem;">${name}${isOpt ? ' <span style="opacity:0.4;font-size:0.55rem;">(conc)</span>' : ''}</td>`;
+
+      COMPETENCIAS.forEach(c => {
+        const lvl = comps?.[c.id] || '';
+        if (lvl) {
+          html += `<td class="trayecto-cell lvl-${lvl}" style="font-weight:700;font-size:0.8rem;text-align:center;">${lvl}</td>`;
+        } else {
+          html += '<td class="trayecto-cell"></td>';
+        }
+      });
+      html += '</tr>';
+    });
   });
 
   html += '</tbody></table>';
