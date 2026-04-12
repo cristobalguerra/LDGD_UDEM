@@ -680,9 +680,10 @@ body {
   min-width:200px; color:var(--text);
 }
 .trayecto-cell { border-radius:4px; min-width:24px; }
-.trayecto-cell.lvl-I { background:rgba(61,140,130,0.25); color:#3D8C82; font-weight:700; }
-.trayecto-cell.lvl-D { background:rgba(113,116,178,0.25); color:#7174B2; font-weight:700; }
-.trayecto-cell.lvl-M { background:rgba(255,245,0,0.2); color:var(--accent); font-weight:700; }
+.trayecto-cell.lvl-B { background:rgba(61,140,130,0.25); color:#3D8C82; font-weight:700; }
+.trayecto-cell.lvl-I { background:rgba(113,116,178,0.25); color:#7174B2; font-weight:700; }
+.trayecto-cell.lvl-A { background:rgba(232,139,110,0.25); color:#E88B6E; font-weight:700; }
+.trayecto-cell.lvl-E { background:rgba(255,245,0,0.2); color:var(--accent); font-weight:700; }
 .trayecto-cell.lvl-opt { border:1px dashed rgba(255,255,255,0.2); opacity:0.6; }
 
 .trayecto-legend {
@@ -1157,9 +1158,10 @@ body.role-admin #modalBadge { display:none; }
   display:flex; align-items:center; justify-content:center; transition:all 0.2s;
 }
 .comp-level-btn:hover { border-color:var(--text-secondary); color:var(--text); }
+.comp-level-btn.active-B { background:#3D8C82; border-color:#3D8C82; color:#fff; }
 .comp-level-btn.active-I { background:#7174B2; border-color:#7174B2; color:#fff; }
-.comp-level-btn.active-D { background:#E88B6E; border-color:#E88B6E; color:#fff; }
-.comp-level-btn.active-M { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.comp-level-btn.active-A { background:#E88B6E; border-color:#E88B6E; color:#fff; }
+.comp-level-btn.active-E { background:var(--accent); border-color:var(--accent); color:var(--bg); }
 .comp-item.suggested { border-left:2px solid var(--accent); }
 .comp-suggested-badge { color:var(--accent); font-size:0.7rem; flex-shrink:0; margin-right:4px; }
 .comp-suggestion-note { font-size:0.75rem; color:var(--text-tertiary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
@@ -1167,9 +1169,10 @@ body.role-admin #modalBadge { display:none; }
 .comp-legend { display:flex; gap:12px; margin-bottom:10px; font-size:0.7rem; color:var(--text-tertiary); }
 .comp-legend-item { display:flex; align-items:center; gap:4px; }
 .comp-legend-dot { width:10px; height:10px; border-radius:3px; }
+.comp-legend-dot.l-B { background:#3D8C82; }
 .comp-legend-dot.l-I { background:#7174B2; }
-.comp-legend-dot.l-D { background:#E88B6E; }
-.comp-legend-dot.l-M { background:var(--accent); }
+.comp-legend-dot.l-A { background:#E88B6E; }
+.comp-legend-dot.l-E { background:var(--accent); }
 
 /* ===== BIBLIOGRAFÍA + ARCHIVOS ===== */
 .biblio-list { display:flex; flex-direction:column; gap:6px; }
@@ -1599,7 +1602,7 @@ body.role-admin #modalBadge { display:none; }
       <div class="programa-section">
         <div class="programa-section-num">05</div>
         <h2 class="programa-section-title">Trayecto Formativo del Estudiante</h2>
-        <p class="programa-section-text" style="margin-bottom:24px;">Visualización del desarrollo progresivo de competencias a lo largo de los 9 semestres. Cada competencia pasa por tres niveles: <strong>Introduce</strong> (primer contacto), <strong>Desarrolla</strong> (profundización) y <strong>Domina</strong> (maestría). Las materias de concentración (opcionales) se indican con borde punteado.</p>
+        <p class="programa-section-text" style="margin-bottom:24px;">Visualización del desarrollo progresivo de los Student Learning Outcomes (SLOs) a lo largo de los 9 semestres. Cada SLO pasa por cuatro niveles: <strong>B</strong> (Básico), <strong>I</strong> (Intermedio), <strong>A</strong> (Avanzado) y <strong>E</strong> (Evaluación). Las materias de concentración (opcionales) se indican con borde punteado.</p>
         <div class="trayecto-wrap" id="trayectoWrap"></div>
         <div class="trayecto-legend">
           <div class="trayecto-legend-item"><span class="trayecto-dot tl-i"></span> Introduce</div>
@@ -2177,9 +2180,10 @@ body.role-admin #modalBadge { display:none; }
       <div class="modal-section">
         <div class="modal-section-label">Competencias del Perfil de Egreso</div>
         <div class="comp-legend">
-          <div class="comp-legend-item"><div class="comp-legend-dot l-I"></div> Introduce</div>
-          <div class="comp-legend-item"><div class="comp-legend-dot l-D"></div> Desarrolla</div>
-          <div class="comp-legend-item"><div class="comp-legend-dot l-M"></div> Domina</div>
+          <div class="comp-legend-item"><div class="comp-legend-dot l-B"></div> Básico</div>
+          <div class="comp-legend-item"><div class="comp-legend-dot l-I"></div> Intermedio</div>
+          <div class="comp-legend-item"><div class="comp-legend-dot l-A"></div> Avanzado</div>
+          <div class="comp-legend-item"><div class="comp-legend-dot l-E"></div> Evaluación</div>
         </div>
         <div class="comp-suggestion-note" id="compSuggestionNote"><span>★</span> Nivel sugerido para esta asignatura</div>
         <div class="comp-list" id="compList"></div>
@@ -2542,7 +2546,7 @@ function buildJourneyStrip() {
         const slug = name.toLowerCase().replace(/[^a-záéíóúñü0-9]+/gi,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
         const comps = SUGGESTED_COMPS[slug];
         if (comps) Object.entries(comps).forEach(([cid,lvl]) => {
-          if (!compData[cid] || 'IDM'.indexOf(lvl) > 'IDM'.indexOf(compData[cid])) compData[cid] = lvl;
+          if (!compData[cid] || 'BIAE'.indexOf(lvl) > 'BIAE'.indexOf(compData[cid])) compData[cid] = lvl;
         });
       });
 
@@ -2793,22 +2797,18 @@ function handleSeriacionLeave(e) {
 
 // ===== COMPETENCIAS DATA =====
 const COMPETENCIAS = [
-  { id:'C1', label:'Lenguaje visual y comunicación gráfica',
-    desc:'Concibe y desarrolla proyectos de comunicación visual, articulando forma, color, tipografía, imagen y composición con criterio estético y funcional, aplicando los principios del lenguaje visual para generar mensajes claros, coherentes y con impacto comunicativo en contextos culturales, sociales y comerciales diversos.' },
-  { id:'C2', label:'Sistemas de identidad visual y de marca',
-    desc:'Diseña, estructura y gestiona sistemas de identidad visual y de marca, integrando investigación, estrategia y producción en múltiples soportes y plataformas, para construir ecosistemas de marca coherentes, diferenciados y sostenibles que generen valor para organizaciones y audiencias.' },
-  { id:'C3', label:'Diseño de experiencia, información e interacción',
-    desc:'Investiga, diseña y valida experiencias centradas en el usuario, integrando arquitectura de información, diseño de interfaz, interacción y prototipado, para resolver problemáticas complejas de comunicación y servicio que conecten de manera eficaz con las necesidades y expectativas de las personas.' },
-  { id:'C4', label:'Dirección estratégica y gestión de proyectos',
-    desc:'Planifica, coordina y dirige proyectos integrales de diseño, aplicando metodologías de gestión, evaluación de resultados y toma de decisiones fundamentada, para vincular objetivos creativos con resultados estratégicos medibles en contextos organizacionales y multidisciplinarios.' },
-  { id:'C5', label:'Producción, tecnología e implementación',
-    desc:'Domina procesos de producción gráfica y digital, herramientas profesionales y tecnologías emergentes, para implementar soluciones de diseño con calidad técnica, viabilidad productiva y aprovechamiento estratégico de los recursos tecnológicos, incluyendo inteligencia artificial aplicada.' },
-  { id:'C6', label:'Investigación, pensamiento crítico y fundamentación',
-    desc:'Aplica metodologías de investigación cualitativa y cuantitativa, análisis crítico y fundamentación conceptual, para sustentar decisiones de diseño con rigor intelectual, generando conocimiento accionable que oriente la concepción y desarrollo de proyectos creativos y estratégicos.' },
-  { id:'C7', label:'Innovación, creatividad y visión prospectiva',
-    desc:'Genera soluciones originales e innovadoras mediante pensamiento creativo, especulativo y prospectivo, anticipando escenarios futuros y diseñando propuestas que respondan a contextos sociales, culturales, tecnológicos y ambientales emergentes con visión transformadora y sostenible.' },
-  { id:'C8', label:'Colaboración profesional y ética',
-    desc:'Trabaja de manera efectiva en equipos multidisciplinarios, comunica y argumenta propuestas con claridad profesional, y ejerce su práctica con responsabilidad social, compromiso ético y visión de sostenibilidad, generando valor e impacto positivo en su entorno.' }
+  { id:'SLO1', label:'Dirección estratégica de proyectos de diseño',
+    desc:'Dirigir proyectos integrales de diseño visual mediante la aplicación de metodologías estratégicas, pensamiento sistémico y gestión de recursos, para desarrollar soluciones coherentes, viables y sostenibles en contextos organizacionales complejos.' },
+  { id:'SLO2', label:'Desarrollo de sistemas de comunicación visual',
+    desc:'Desarrollar sistemas de comunicación visual mediante la integración de identidad, información, experiencia e interacción, para resolver problemáticas de comunicación en entornos sociales, culturales y económicos.' },
+  { id:'SLO3', label:'Gestión de procesos creativos e innovación',
+    desc:'Gestionar procesos creativos mediante metodologías de diseño, investigación aplicada e innovación, para generar soluciones competitivas alineadas a necesidades del entorno productivo.' },
+  { id:'SLO4', label:'Integración tecnológica para el diseño digital',
+    desc:'Integrar tecnologías digitales, prototipado interactivo y herramientas de experiencia de usuario para desarrollar productos y servicios de diseño acordes a los procesos de transformación digital.' },
+  { id:'SLO5', label:'Vinculación del diseño con modelos de negocio',
+    desc:'Vincular proyectos de diseño con modelos de negocio mediante análisis estratégico y gestión del valor del diseño, para fortalecer su impacto económico y organizacional.' },
+  { id:'SLO6', label:'Evaluación del impacto social y cultural del diseño',
+    desc:'Evaluar el impacto social, cultural y económico de proyectos de diseño mediante criterios éticos, sostenibilidad y responsabilidad profesional, para asegurar su pertinencia y contribución al entorno.' }
 ];
 
 // ===== COURSE OBJECTIVES =====
@@ -3122,68 +3122,66 @@ const COURSE_DATA = {
 const COURSE_OBJECTIVES = {};
 Object.entries(COURSE_DATA).forEach(([k,v]) => { COURSE_OBJECTIVES[k] = v.obj; });
 
+// C1=Dirección estratégica  C2=Sistemas comunicación visual  C3=Gestión procesos creativos
+// C4=Integración tecnológica  C5=Vinculación con negocio  C6=Impacto social/cultural
+// Niveles: B=Básico I=Intermedio A=Avanzado E=Evaluación
 const SUGGESTED_COMPS = {
-  // ═══ SEM 1 — INTRODUCE ═══
-  'diseño-visual-i-principios-y-composición':{C1:'I',C7:'I'},
-  'visualización-y-pensamiento-de-diseño':{C1:'I',C6:'I',C7:'I'},
-  'contexto-cultural-del-diseño':{C6:'I',C8:'I'},
-  'herramientas-digitales-para-el-diseño':{C5:'I'},
-  'tecnologías-emergentes':{C5:'I',C8:'I'},
-  // ═══ SEM 2 — INTRODUCE → DEVELOP ═══
-  'diseño-visual-ii-forma-color-y-estructura':{C1:'D',C7:'I'},
-  'tipografía-i-fundamentos':{C1:'I',C5:'I'},
-  'ilustración-aplicada':{C1:'I',C7:'I'},
-  'lenguaje-y-significado-en-el-diseño':{C1:'I',C6:'I',C8:'I'},
-  'etica-social-cristiana':{C8:'I'},
-  // ═══ SEM 3 — DEVELOP ═══
-  'identidad-de-marca-i-fundamentos':{C1:'D',C2:'I',C7:'D'},
-  'diseño-de-información-i':{C3:'I',C6:'D'},
-  'fotografía-para-diseño':{C1:'D',C5:'I'},
-  'tipografía-ii-aplicaciones':{C1:'D',C2:'I'},
-  'direc-creat-para-med-audiovis-e-interac':{C1:'D',C5:'I',C7:'D',C8:'I'},
-  'antropología-filosófica':{C6:'I',C8:'I'},
-  // ═══ SEM 4 — DEVELOP ═══
-  'diseño-de-información-ii-sistemas-de-información':{C2:'D',C3:'D',C5:'D',C6:'D'},
-  'gestión-de-producción':{C4:'I',C5:'D'},
-  'diseño-de-empaque':{C1:'D',C2:'D',C5:'D'},
-  'emprendimiento-con-propósito':{C8:'I'},
+  // ═══ SEM 1 — BÁSICO ═══
+  'diseño-visual-i-principios-y-composición':{SLO2:'B'},
+  'visualización-y-pensamiento-de-diseño':{SLO2:'B',SLO3:'B',SLO4:'B'},
+  'contexto-cultural-del-diseño':{SLO6:'B'},
+  'herramientas-digitales-para-el-diseño':{SLO4:'B'},
+  // ═══ SEM 2 — BÁSICO ═══
+  'diseño-visual-ii-forma-color-y-estructura':{SLO2:'B',SLO3:'B'},
+  'tipografía-i-fundamentos':{SLO2:'B'},
+  'ilustración-aplicada':{SLO2:'B',SLO3:'B'},
+  'lenguaje-y-significado-en-el-diseño':{SLO2:'B',SLO6:'B'},
+  // ═══ SEM 3 — BÁSICO → INTERMEDIO ═══
+  'identidad-de-marca-i-fundamentos':{SLO1:'B',SLO2:'I'},
+  'diseño-de-información-i':{SLO2:'I',SLO4:'B'},
+  'fotografía-para-diseño':{SLO2:'I',SLO4:'I'},
+  'tipografía-ii-aplicaciones':{SLO2:'I'},
+  'direc-creat-para-med-audiovis-e-interac':{SLO1:'B',SLO2:'I',SLO3:'B',SLO4:'I'},
+  // ═══ SEM 4 — INTERMEDIO ═══
+  'diseño-de-información-ii-sistemas-de-información':{SLO1:'I',SLO2:'I',SLO4:'I'},
+  'gestión-de-producción':{SLO1:'I',SLO4:'I',SLO5:'B'},
+  'diseño-de-empaque':{SLO2:'I',SLO4:'I',SLO5:'B'},
   // SEM 4 CONCENTRACIONES (opcionales)
-  'dir-de-arte-y-fotografía':{C1:'D',C5:'D'},
-  'dir-de-arte-y-fotografía-de-producto':{C1:'D',C5:'D'},
-  'gestión-de-proyectos-de-diseño':{C4:'I',C8:'I'},
-  'gestión-de-proyectos-creativos':{C4:'I',C8:'I'},
-  // ═══ SEM 5 — DEVELOP → MASTER ═══
-  'identidad-de-marca-ii-implementación':{C1:'M',C2:'D',C7:'D'},
-  'portafolio-profesional':{C1:'D',C8:'D'},
-  'diseño-de-futuros-pendientes':{C4:'D',C6:'D',C7:'D'},
-  'pensamiento-de-futuros-sociales':{C6:'D',C8:'D'},
-  // SEM 5 CONCENTRACIÓN (opcional)
-  'toma-de-decisiones-en-procesos-de-diseño':{C4:'D',C6:'D',C8:'D'},
-  'dirección-visual-de-marca':{C1:'D',C2:'D',C4:'D'},
-  // ═══ SEM 6 — DEVELOP → MASTER ═══
-  'estudio-de-interacción':{C3:'D',C5:'D',C7:'D'},
-  'diseño-de-experiencia':{C3:'D',C6:'D'},
-  'prototipado-de-experiencias':{C3:'D',C5:'D',C7:'D'},
-  'producción-artística-interdisciplinaria':{C1:'D',C7:'M',C8:'D'},
-  // SEM 6 CONCENTRACIÓN (opcional)
-  'inteligencia-artificial-para-diseño':{C5:'D',C7:'D'},
-  'motion-design-y-contenido-digital':{C1:'D',C5:'D',C7:'D'},
-  // ═══ SEM 7 — MASTER ═══
-  'diseño-de-servicios':{C3:'M',C4:'D',C8:'D'},
-  'prácticas-profesionales':{C4:'D',C5:'M',C8:'M'},
-  'innovación-en-diseño':{C4:'D',C6:'M',C7:'M'},
-  // SEM 7 CONCENTRACIÓN (opcional)
-  'diseño-estratégico-e-innovación':{C4:'D',C7:'D',C8:'D'},
-  'consultoría-y-estrategia-de-diseño':{C4:'D',C7:'D',C8:'D'},
-  // ═══ SEM 8 — MASTER ═══
-  'estudio-integral-de-diseño':{C1:'M',C2:'M',C3:'M',C4:'M',C7:'M'},
-  'proyecto-de-evaluación-final-i':{C4:'M',C6:'M',C8:'M'},
-  'negocios-pendiente':{C4:'M',C8:'M'},
-  // SEM 8 CONCENTRACIÓN (opcional)
-  'emprendimiento-en-diseño':{C8:'D',C4:'D'},
-  'emprendimiento-creativo':{C8:'D',C4:'D'},
-  // ═══ SEM 9 — MASTER ═══
-  'proyecto-de-evaluación-final-ii':{C1:'M',C4:'M',C6:'M',C7:'M',C8:'M'},
+  'dir-de-arte-y-fotografía':{SLO2:'I',SLO4:'I'},
+  'dir-de-arte-y-fotografía-de-producto':{SLO2:'I',SLO4:'I'},
+  'gestión-de-proyectos-de-diseño':{SLO1:'I',SLO5:'B'},
+  'gestión-de-proyectos-creativos':{SLO1:'I',SLO5:'B'},
+  // ═══ SEM 5 — INTERMEDIO → AVANZADO ═══
+  'identidad-de-marca-ii-implementación':{SLO1:'I',SLO2:'A',SLO3:'I',SLO5:'I'},
+  'portafolio-profesional':{SLO2:'I',SLO5:'I'},
+  'diseño-de-futuros-pendientes':{SLO1:'I',SLO3:'I',SLO6:'I'},
+  'toma-de-decisiones-en-procesos-de-diseño':{SLO1:'I',SLO3:'I',SLO6:'I'},
+  // SEM 5 CONCENTRACIONES (opcionales)
+  'dirección-visual-de-marca':{SLO1:'I',SLO2:'A'},
+  // ═══ SEM 6 — INTERMEDIO → AVANZADO ═══
+  'estudio-de-interacción':{SLO1:'I',SLO2:'A',SLO3:'I',SLO4:'A'},
+  'diseño-de-experiencia':{SLO3:'I',SLO4:'I',SLO6:'I'},
+  'prototipado-de-experiencias':{SLO3:'I',SLO4:'A'},
+  'producción-artística-interdisciplinaria':{SLO2:'I',SLO3:'A',SLO6:'I'},
+  // SEM 6 CONCENTRACIONES (opcionales)
+  'inteligencia-artificial-para-diseño':{SLO4:'A',SLO3:'I'},
+  'motion-design-y-contenido-digital':{SLO2:'I',SLO4:'A',SLO3:'I'},
+  // ═══ SEM 7 — AVANZADO ═══
+  'diseño-de-servicios':{SLO1:'A',SLO2:'A',SLO3:'A',SLO5:'I',SLO6:'I'},
+  'prácticas-profesionales':{SLO1:'E',SLO2:'E',SLO3:'E',SLO4:'E',SLO5:'E',SLO6:'E'},
+  'innovación-en-diseño':{SLO1:'I',SLO3:'A',SLO6:'A'},
+  // SEM 7 CONCENTRACIONES (opcionales)
+  'diseño-estratégico-e-innovación':{SLO1:'A',SLO3:'A',SLO5:'I'},
+  'consultoría-y-estrategia-de-diseño':{SLO1:'A',SLO3:'A',SLO5:'I'},
+  // ═══ SEM 8 — AVANZADO ═══
+  'estudio-integral-de-diseño':{SLO1:'A',SLO2:'A',SLO3:'A',SLO4:'A',SLO5:'A',SLO6:'A'},
+  'negocios-pendiente':{SLO1:'A',SLO5:'A'},
+  'proyecto-de-evaluación-final-i':{SLO1:'E',SLO2:'E',SLO3:'E',SLO4:'E',SLO5:'E',SLO6:'E'},
+  // SEM 8 CONCENTRACIONES (opcionales)
+  'emprendimiento-en-diseño':{SLO1:'A',SLO5:'A'},
+  'emprendimiento-creativo':{SLO1:'A',SLO5:'A'},
+  // ═══ SEM 9 — EVALUACIÓN ═══
+  'proyecto-de-evaluación-final-ii':{SLO1:'E',SLO2:'E',SLO3:'E',SLO4:'E',SLO5:'E',SLO6:'E'},
 };
 
 // Competency info available in modal only (not on cards)
@@ -3323,14 +3321,14 @@ function markUnsaved() {
 function snapshotPlan() { _savedSnapshot = JSON.stringify(gatherPlanData()); }
 function hasChanges() { return _savedSnapshot !== JSON.stringify(gatherPlanData()); }
 
-// checked = {C1:'I', C3:'D'} or ['C1','C3'] (legacy), suggested = {C1:'I', C7:'D'} or []
+// checked = {SLO1:'I', SLO3:'D'} or ['C1','C3'] (legacy), suggested = {SLO1:'I', C7:'D'} or []
 function renderCompetencias(checked, suggested) {
   // Normalize legacy array format to object
   if (Array.isArray(checked)) { const obj = {}; checked.forEach(id => { obj[id] = 'I'; }); checked = obj; }
   suggested = suggested || {};
   if (Array.isArray(suggested)) { const obj = {}; suggested.forEach(id => { obj[id] = 'I'; }); suggested = obj; }
   compList.innerHTML = '';
-  const levels = ['I','D','M'];
+  const levels = ['B','I','A','E'];
   COMPETENCIAS.forEach(c => {
     const isSuggested = !!suggested[c.id];
     const currentLevel = checked[c.id] || null;
@@ -3825,7 +3823,7 @@ async function generatePlanPDF() {
   const sections = [
     ['Objetivo General', plan.objetivo],
     ['Objetivos Específicos', plan.objetivosEspecificos],
-    ['Competencias del Perfil de Egreso', (() => { const comps = plan.competencias || {}; if (Array.isArray(comps)) return comps.map(id => { const c = COMPETENCIAS.find(x => x.id === id); return c ? c.id + ' — ' + c.label : id; }).join('\n') || '(Sin competencias)'; const entries = Object.entries(comps); if (!entries.length) return '(Sin competencias)'; const labels = {I:'Introduce', D:'Desarrolla', M:'Domina'}; return entries.map(([id, lvl]) => { const c = COMPETENCIAS.find(x => x.id === id); return `[${lvl}] ${id} — ${c ? c.label : id} (${labels[lvl]})`; }).join('\n'); })()],
+    ['Competencias del Perfil de Egreso', (() => { const comps = plan.competencias || {}; if (Array.isArray(comps)) return comps.map(id => { const c = COMPETENCIAS.find(x => x.id === id); return c ? c.id + ' — ' + c.label : id; }).join('\n') || '(Sin competencias)'; const entries = Object.entries(comps); if (!entries.length) return '(Sin competencias)'; const labels = {B:'Básico', I:'Intermedio', A:'Avanzado', E:'Evaluación'}; return entries.map(([id, lvl]) => { const c = COMPETENCIAS.find(x => x.id === id); return `[${lvl}] ${id} — ${c ? c.label : id} (${labels[lvl]})`; }).join('\n'); })()],
     ['Contenido Temático', plan.contenido],
     ['Metodología de Enseñanza', plan.metodologia],
     ['Criterios de Evaluación', plan.evaluacion],
