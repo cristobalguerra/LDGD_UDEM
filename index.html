@@ -3125,57 +3125,69 @@ Object.entries(COURSE_DATA).forEach(([k,v]) => { COURSE_OBJECTIVES[k] = v.obj; }
 // C1=Dirección estratégica  C2=Sistemas comunicación visual  C3=Gestión procesos creativos
 // C4=Integración tecnológica  C5=Vinculación con negocio  C6=Impacto social/cultural
 // Niveles: B=Básico I=Intermedio A=Avanzado E=Evaluación
+// SLO1=Dirección estratégica  SLO2=Sistemas comunicación visual  SLO3=Gestión procesos creativos
+// SLO4=Integración tecnológica  SLO5=Vinculación con negocio  SLO6=Impacto social/cultural
+// Niveles: B=Básico I=Intermedio A=Avanzado E=Evaluación
+// REGLAS: SLO5 y SLO6 solo aparecen en sem 5+ (en Estudios donde se integra todo)
+//         E solo en Prácticas y PEF. No se evalúa en sem 1-2.
 const SUGGESTED_COMPS = {
-  // ═══ SEM 1 — BÁSICO ═══
+  // ═══ SEM 1 — BÁSICO (solo SLO2 y SLO4) ═══
   'diseño-visual-i-principios-y-composición':{SLO2:'B'},
-  'visualización-y-pensamiento-de-diseño':{SLO2:'B',SLO3:'B',SLO4:'B'},
-  'contexto-cultural-del-diseño':{SLO6:'B'},
+  'visualización-y-pensamiento-de-diseño':{SLO2:'B',SLO3:'B'},
+  'contexto-cultural-del-diseño':{SLO2:'B'},
   'herramientas-digitales-para-el-diseño':{SLO4:'B'},
   // ═══ SEM 2 — BÁSICO ═══
   'diseño-visual-ii-forma-color-y-estructura':{SLO2:'B',SLO3:'B'},
   'tipografía-i-fundamentos':{SLO2:'B'},
   'ilustración-aplicada':{SLO2:'B',SLO3:'B'},
-  'lenguaje-y-significado-en-el-diseño':{SLO2:'B',SLO6:'B'},
+  'lenguaje-y-significado-en-el-diseño':{SLO2:'B'},
   // ═══ SEM 3 — BÁSICO → INTERMEDIO ═══
   'identidad-de-marca-i-fundamentos':{SLO1:'B',SLO2:'I'},
   'diseño-de-información-i':{SLO2:'I',SLO4:'B'},
   'fotografía-para-diseño':{SLO2:'I',SLO4:'I'},
   'tipografía-ii-aplicaciones':{SLO2:'I'},
-  'direc-creat-para-med-audiovis-e-interac':{SLO1:'B',SLO2:'I',SLO3:'B',SLO4:'I'},
+  'direc-creat-para-med-audiovis-e-interac':{SLO2:'I',SLO3:'B',SLO4:'I'},
+  // Slug alternativo para sinergia sem 3 (nombre cambiado en Firebase)
+  'direc-arte-para-med-audiovis-e-interac':{SLO2:'I',SLO3:'B',SLO4:'I'},
   // ═══ SEM 4 — INTERMEDIO ═══
   'diseño-de-información-ii-sistemas-de-información':{SLO1:'I',SLO2:'I',SLO4:'I'},
-  'gestión-de-producción':{SLO1:'I',SLO4:'I',SLO5:'B'},
-  'diseño-de-empaque':{SLO2:'I',SLO4:'I',SLO5:'B'},
+  'gestión-de-producción':{SLO1:'I',SLO4:'I'},
+  'diseño-de-empaque':{SLO2:'I',SLO4:'I'},
   // SEM 4 CONCENTRACIONES (opcionales)
   'dir-de-arte-y-fotografía':{SLO2:'I',SLO4:'I'},
   'dir-de-arte-y-fotografía-de-producto':{SLO2:'I',SLO4:'I'},
-  'gestión-de-proyectos-de-diseño':{SLO1:'I',SLO5:'B'},
-  'gestión-de-proyectos-creativos':{SLO1:'I',SLO5:'B'},
-  // ═══ SEM 5 — INTERMEDIO → AVANZADO ═══
-  'identidad-de-marca-ii-implementación':{SLO1:'I',SLO2:'A',SLO3:'I',SLO5:'I'},
-  'portafolio-profesional':{SLO2:'I',SLO5:'I'},
-  'diseño-de-futuros-pendientes':{SLO1:'I',SLO3:'I',SLO6:'I'},
-  'toma-de-decisiones-en-procesos-de-diseño':{SLO1:'I',SLO3:'I',SLO6:'I'},
+  'gestión-de-proyectos-de-diseño':{SLO1:'I',SLO3:'I'},
+  'gestión-de-proyectos-creativos':{SLO1:'I',SLO3:'I'},
+  // ═══ SEM 5 — INTERMEDIO → AVANZADO (SLO5 aparece aquí por primera vez en Estudio) ═══
+  'identidad-de-marca-ii-implementación':{SLO1:'I',SLO2:'A',SLO3:'I',SLO5:'B'},
+  'portafolio-profesional':{SLO2:'I'},
+  'diseño-de-futuros-pendientes':{SLO3:'I',SLO6:'B'},
+  'toma-de-decisiones-en-procesos-de-diseño':{SLO1:'I',SLO3:'I'},
+  'materiales-experimentales-falta-sustentabilidad':{SLO3:'I',SLO6:'B'},
   // SEM 5 CONCENTRACIONES (opcionales)
   'dirección-visual-de-marca':{SLO1:'I',SLO2:'A'},
   // ═══ SEM 6 — INTERMEDIO → AVANZADO ═══
   'estudio-de-interacción':{SLO1:'I',SLO2:'A',SLO3:'I',SLO4:'A'},
-  'diseño-de-experiencia':{SLO3:'I',SLO4:'I',SLO6:'I'},
+  'diseño-de-experiencia':{SLO3:'I',SLO4:'I'},
   'prototipado-de-experiencias':{SLO3:'I',SLO4:'A'},
-  'producción-artística-interdisciplinaria':{SLO2:'I',SLO3:'A',SLO6:'I'},
+  'producción-artística-interdisciplinaria':{SLO2:'I',SLO3:'A'},
+  'estrategia-de-negocios-para-arte-y-diseño':{SLO1:'I',SLO5:'I'},
   // SEM 6 CONCENTRACIONES (opcionales)
   'inteligencia-artificial-para-diseño':{SLO4:'A',SLO3:'I'},
-  'motion-design-y-contenido-digital':{SLO2:'I',SLO4:'A',SLO3:'I'},
-  // ═══ SEM 7 — AVANZADO ═══
-  'diseño-de-servicios':{SLO1:'A',SLO2:'A',SLO3:'A',SLO5:'I',SLO6:'I'},
+  'motion-design-y-contenido-digital':{SLO2:'I',SLO4:'A'},
+  // ═══ SEM 7 — AVANZADO (SLO5 y SLO6 llegan a A en Estudios) ═══
+  'diseño-de-servicios':{SLO1:'A',SLO2:'A',SLO3:'A',SLO5:'A',SLO6:'A'},
   'prácticas-profesionales':{SLO1:'E',SLO2:'E',SLO3:'E',SLO4:'E',SLO5:'E',SLO6:'E'},
-  'innovación-en-diseño':{SLO1:'I',SLO3:'A',SLO6:'A'},
+  'innovación-en-diseño':{SLO3:'A',SLO6:'I'},
+  'metodologías-de-investigación-y-creación-para-el-arte-y-diseño':{SLO3:'A',SLO6:'I'},
   // SEM 7 CONCENTRACIONES (opcionales)
   'diseño-estratégico-e-innovación':{SLO1:'A',SLO3:'A',SLO5:'I'},
   'consultoría-y-estrategia-de-diseño':{SLO1:'A',SLO3:'A',SLO5:'I'},
-  // ═══ SEM 8 — AVANZADO ═══
+  // ═══ SEM 8 — AVANZADO → EVALUACIÓN ═══
   'estudio-integral-de-diseño':{SLO1:'A',SLO2:'A',SLO3:'A',SLO4:'A',SLO5:'A',SLO6:'A'},
+  'estudio-integral-de-diseño-y-negocios':{SLO1:'A',SLO2:'A',SLO3:'A',SLO4:'A',SLO5:'A',SLO6:'A'},
   'negocios-pendiente':{SLO1:'A',SLO5:'A'},
+  'diseño-participativo-falta':{SLO3:'A',SLO6:'A'},
   'proyecto-de-evaluación-final-i':{SLO1:'E',SLO2:'E',SLO3:'E',SLO4:'E',SLO5:'E',SLO6:'E'},
   // SEM 8 CONCENTRACIONES (opcionales)
   'emprendimiento-en-diseño':{SLO1:'A',SLO5:'A'},
